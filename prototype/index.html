@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Alwin — Machine Learning Engineer &amp; LLM Researcher</title>
+  <meta name="description" content="Alwin — Machine Learning Engineer and LLM Researcher. Training, quantising and serving language models in production." />
+  <meta name="theme-color" content="#050506" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Alwin — Machine Learning Engineer &amp; LLM Researcher" />
+  <meta property="og:description" content="Training, quantising and serving language models in production." />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23f2f2f3'/%3E%3Cg fill='none' stroke='%23050506' stroke-width='2.6' stroke-linecap='butt' stroke-linejoin='miter'%3E%3Cpath d='M8.5 24 16 8.5 23.5 24'/%3E%3Cpath d='M11.4 18.4h9.2'/%3E%3C/g%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ══ ambient layers ═══════════════════════════════════════════════ -->
+  <div class="bg-aurora" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-noise" aria-hidden="true"></div>
+
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ══ header ═══════════════════════════════════════════════════════ -->
+  <header class="nav" id="nav">
+    <div class="nav-shell">
+      <a class="brand glass" href="#hero" aria-label="Alwin — back to top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <rect class="mark-plate" width="32" height="32" rx="9" />
+            <g class="mark-glyph" fill="none" stroke-width="2.6" stroke-linecap="butt" stroke-linejoin="miter">
+              <path d="M8.5 24 16 8.5 23.5 24" />
+              <path d="M11.4 18.4h9.2" />
+            </g>
+          </svg>
+        </span>
+        <span class="brand-text">Alwin</span>
+      </a>
+
+      <nav class="nav-links glass" id="navLinks" aria-label="Section navigation">
+        <span class="nav-indicator" aria-hidden="true"></span>
+        <a href="#stack" class="nav-link">Stack</a>
+        <a href="#experience" class="nav-link">Experience</a>
+        <a href="#research" class="nav-link">Research</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="nav-cta glass" href="#contact" aria-label="Let&rsquo;s talk" data-tip="Let&rsquo;s talk">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h13" /><path d="m12.5 5.5 6.5 6.5-6.5 6.5" />
+          </svg>
+        </a>
+        <button class="nav-toggle glass" id="navToggle" type="button" aria-expanded="false" aria-controls="navLinks" aria-label="Open navigation">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ══ hero ═══════════════════════════════════════════════════════ -->
+    <section class="hero section" id="hero">
+      <div class="wrap hero-grid">
+
+        <div class="hero-copy">
+          <p class="eyebrow" data-reveal>
+            <span class="pulse" aria-hidden="true"></span>
+            Open to research collaboration
+          </p>
+
+          <h1 class="hero-title" data-reveal data-reveal-delay="1">
+            <span class="hero-hello">Hello, I&rsquo;m</span>
+            <span class="hero-name">Alwin.</span>
+            <span class="hero-role">Machine Learning Engineer<span class="amp"> &amp; </span>LLM Researcher.</span>
+          </h1>
+
+          <p class="hero-lede" data-reveal data-reveal-delay="2">
+            I build the unglamorous half of applied AI &mdash; the fine-tuning runs, the
+            quantisation passes, the inference servers that stay up. Currently focused on
+            making small, open language models genuinely useful in production.
+          </p>
+
+          <div class="hero-actions" data-reveal data-reveal-delay="3">
+            <a class="btn btn-solid" href="#projects">
+              View selected work
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13" /><path d="m12.5 5.5 6.5 6.5-6.5 6.5" /></svg>
+            </a>
+            <a class="btn btn-glass" href="#contact">Get in touch</a>
+          </div>
+
+          <ul class="socials" data-reveal data-reveal-delay="4" aria-label="Elsewhere">
+            <li>
+              <!-- EDIT: your LinkedIn URL -->
+              <a class="social" href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-tip="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13Zm1.78 13.02H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z" /></svg>
+              </a>
+            </li>
+            <li>
+              <!-- EDIT: your GitHub URL -->
+              <a class="social" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" data-tip="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.23c-3.34.72-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.53.11-3.18 0 0 1.01-.32 3.3 1.23a11.4 11.4 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.65.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.83.58A12 12 0 0 0 12 .3Z" /></svg>
+              </a>
+            </li>
+            <li>
+              <!-- EDIT: your email -->
+              <a class="social" href="mailto:alwin@example.com" aria-label="Email" data-tip="Email">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="4.8" width="18.8" height="14.4" rx="3" /><path d="m3.6 8 8.4 5.6L20.4 8" /></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- ── hero visual ── -->
+        <div class="hero-visual" data-reveal data-reveal-delay="2">
+          <div class="hero-stage">
+
+            <!-- dotted semi-circle -->
+            <div class="arc arc-outer" aria-hidden="true"></div>
+            <div class="arc arc-inner" aria-hidden="true"></div>
+
+            <!-- ascii motif overlay -->
+            <pre class="ascii" aria-hidden="true">..--==++xxx++==--::..  ..--==++xxx++==--::..
+:..--==++xxx++==--::.  .:..--==++xxx++==--::
+.:..--==++xxx++==--:    ::..--==++xxx++==--.
+--::..--==++xxx++==      ==--::..--==++xxx++
+++==--::..--==++xxx      xxx++==--::..--==++
+xxx++==--::..--==+        +==--::..--==++xxx
+++xxx++==--::..--:        :--..--==++xxx++==
+==++xxx++==--::..          ..::--==++xxx++==
+--==++xxx++==--::          ::--==++xxx++==--
+:.--==++xxx++==--:        :--==++xxx++==--:.
+..:.--==++xxx++==-        -==++xxx++==--:...
+...:.--==++xxx++=          =++xxx++==--:....
+....:.--==++xxx+            +xxx++==--:.....
+.....:.--==++xx              xx++==--:......
+......:.--==++x              x++==--:.......
+.......:.--==+                +==--:........</pre>
+
+            <!-- developer illustration -->
+            <!-- The reference is drawn for a light background: solid-black jacket, white
+                 shirt, black hair. Copying that literally would sink the jacket and hair
+                 into --ink, so the solid darks are mapped onto near-black fills separated
+                 from the page by crisp white contours. Tonal ladder, brightest first:
+                 shirt → contours → jacket → trousers/device → background. -->
+            <svg class="illustration" viewBox="0 0 440 440" role="img" aria-label="Illustration of a developer in a dark jacket, seated with a laptop on his lap, programming">
+              <defs>
+                <radialGradient id="floorShadow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16" />
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="lidSheen" x1="0" y1="0" x2="0.4" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.11" />
+                  <stop offset="100%" stop-color="#ffffff" stop-opacity="0.015" />
+                </linearGradient>
+              </defs>
+
+              <ellipse cx="218" cy="414" rx="152" ry="13" fill="url(#floorShadow)" />
+
+              <g class="il" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+
+                <!-- ── lap / thighs ── -->
+                <path class="il-trouser" d="M156 300c-44 18-64 52-58 86 4 20 22 30 44 30h158c20 0 34-12 36-32 4-34-16-68-62-84Z" />
+                <path d="M216 308c-6 34-6 74 0 108" />
+
+                <!-- ── neck ── -->
+                <path d="M208 134c0 22-2 34-4 40" />
+                <path d="M242 132c0 18 1 32 4 40" />
+
+                <!-- ── shirt (the contrast anchor) ── -->
+                <path class="il-shirt" d="M204 170c0 0 12 30 20 42 10-12 22-44 22-44l16 8-4 124h-62l-4-122Z" />
+
+                <!-- ── jacket ── -->
+                <path class="il-jacket" d="M204 168c-38 12-60 40-66 90-4 34 2 60 8 74h156c6-14 12-40 8-74-6-50-28-78-64-90-2 22-10 50-22 72-12-22-18-50-20-72Z" />
+                <!-- drape -->
+                <g stroke-width="2" opacity=".85">
+                  <path d="M166 206c16 38 20 82 12 124" />
+                  <path d="M282 208c-14 38-18 82-10 124" />
+                  <path d="M144 280c20-8 42-6 58 4" />
+                  <path d="M304 278c-18-8-38-6-54 4" />
+                  <path d="M206 258c14 9 36 9 50-2" />
+                </g>
+
+                <!-- ── head ── -->
+                <path d="M194 94c0-30 20-46 42-46s38 18 36 46c-2 22-10 38-24 44-14 6-30 2-40-10-9-11-14-22-14-34Z" />
+                <path d="M195 96c-9-2-11 12-4 16 3 2 5 0 6-2" />
+                <!-- quiff built into the outline; a detached tuft reads as a horn -->
+                <path class="il-hair" d="M193 102C184 68 198 36 228 36c28 0 48 22 45 58-5-20-19-36-37-40-10 14-28 24-42 20-2 10-2 20-1 28Z" />
+                <!-- face -->
+                <g stroke-width="2" opacity=".9">
+                  <path d="M240 92c6-4 14-4 19 0" />
+                  <path d="M243 105c4-3 10-3 14 0" />
+                  <path d="M224 96c-3 10-6 18-3 22 2 2 6 2 8 0" />
+                  <path d="M230 128c6 4 14 3 18-2" />
+                </g>
+
+                <!-- ── laptop, lid facing the viewer ── -->
+                <path class="il-device" d="M228 340l104-13 10 16-104 17Z" />
+                <path class="il-device" stroke="none" d="M124 250l112 16-8 74-113-19Z" />
+                <path fill="url(#lidSheen)" stroke="none" d="M124 250l112 16-8 74-113-19Z" />
+                <path d="M124 250l112 16-8 74-113-19Z" />
+                <circle cx="176" cy="295" r="5.5" fill="currentColor" stroke="none" />
+
+                <!-- ── forearm + hand resting on the deck ──
+                     The wrist matters: without it the hand reads as a mouse. -->
+                <path class="il-jacket" d="M296 286c10 6 14 16 10 26l-26-8c4-8 8-14 16-18Z" />
+                <path class="il-device" d="M280 304c10-4 22-2 28 6 5 7 1 16-8 18l-26 5c-9 2-13-8-8-14 4-6 8-12 14-15Z" />
+                <g stroke-width="1.8" opacity=".75">
+                  <path d="M281 322l7-2" />
+                  <path d="M289 326l7-2" />
+                  <path d="M297 328l6-2" />
+                </g>
+              </g>
+
+              <!-- floor line -->
+              <path d="M62 416h316" stroke="currentColor" stroke-width="1.4" opacity=".16" stroke-linecap="round" />
+            </svg>
+
+            <!-- floating glass chips -->
+            <div class="chip chip-a glass" aria-hidden="true"><span class="mono">torch.compile()</span></div>
+            <div class="chip chip-b glass" aria-hidden="true"><span class="dot"></span><span class="mono">vLLM · 4-bit AWQ</span></div>
+          </div>
+        </div>
+      </div>
+
+      <a class="scroll-hint" href="#stack" aria-label="Scroll to tech stack">
+        <span class="mono">scroll</span>
+        <span class="scroll-line" aria-hidden="true"></span>
+      </a>
+    </section>
+
+    <!-- ══ tech stack ═════════════════════════════════════════════════ -->
+    <section class="section" id="stack">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span>01 &mdash; Toolkit</p>
+          <h2 class="section-title">Tech <em>stack</em></h2>
+          <p class="section-sub">The tools I reach for, grouped by where they sit in the pipeline.</p>
+        </header>
+
+        <div class="stack-grid">
+          <article class="card glass tilt" data-reveal data-spotlight>
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 8-5 4 5 4" /><path d="m15 8 5 4-5 4" /></svg>
+            </div>
+            <h3 class="card-title">Languages</h3>
+            <p class="card-body">What I actually write in, day to day.</p>
+            <ul class="chips">
+              <li>Python</li><li>TypeScript</li><li>JavaScript</li><li>SQL</li><li>Bash</li>
+            </ul>
+          </article>
+
+          <article class="card glass tilt" data-reveal data-reveal-delay="1" data-spotlight>
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.4" /><ellipse cx="12" cy="12" rx="10" ry="4.3" /><ellipse cx="12" cy="12" rx="10" ry="4.3" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="10" ry="4.3" transform="rotate(120 12 12)" /></svg>
+            </div>
+            <h3 class="card-title">LLM &amp; training</h3>
+            <p class="card-body">Adapting open-weight models, and the experiment loop around it.</p>
+            <ul class="chips">
+              <li>LoRA / PEFT</li><li>DeepSpeed</li><li>RAG</li><li>PyTorch</li><li>Transformers</li><li>TRL</li>
+            </ul>
+          </article>
+
+          <article class="card glass tilt" data-reveal data-reveal-delay="2" data-spotlight>
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="2" /><rect x="3" y="14" width="18" height="6" rx="2" /><path d="M7.2 7h.01M7.2 17h.01" /></svg>
+            </div>
+            <h3 class="card-title">Inference &amp; serving</h3>
+            <p class="card-body">Getting weights off a training box and into something people can call.</p>
+            <ul class="chips">
+              <li>vLLM</li><li>AWQ / GPTQ</li><li>llama.cpp</li><li>Ollama</li><li>FastAPI</li><li>CUDA</li>
+            </ul>
+          </article>
+
+          <article class="card glass tilt" data-reveal data-reveal-delay="3" data-spotlight>
+            <div class="card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3Z" /><path d="M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7" /><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></svg>
+            </div>
+            <h3 class="card-title">Data &amp; tooling</h3>
+            <p class="card-body">Stores, containers and the front end that makes the work legible.</p>
+            <ul class="chips">
+              <li>PostgreSQL</li><li>Redis</li><li>Docker</li><li>React / Next.js</li><li>Git</li><li>Weights &amp; Biases</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ experience ═════════════════════════════════════════════════ -->
+    <section class="section" id="experience">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span>02 &mdash; Track record</p>
+          <h2 class="section-title">Work <em>experience</em></h2>
+          <p class="section-sub">Where I&rsquo;ve spent my time, and what actually shipped.</p>
+        </header>
+
+        <!-- EDIT: replace the three entries below with your real roles -->
+        <ol class="timeline">
+          <li class="tl-item" data-reveal>
+            <div class="tl-marker" aria-hidden="true"><span></span></div>
+            <div class="tl-body">
+              <div class="tl-head">
+                <h3 class="tl-role">Machine Learning Engineer</h3>
+                <span class="tl-date mono">2025 &mdash; Present</span>
+              </div>
+              <p class="tl-org">Swinburne AI Tutor &mdash; Applied Research</p>
+              <p class="tl-desc">
+                Own the model side of an AI programming tutor end to end: dataset curation,
+                LoRA fine-tuning, AWQ quantisation, and a GPU inference service with bounded
+                concurrency and token streaming. Cut median response latency substantially by
+                moving from a naive HuggingFace loop to a semaphore-gated vLLM backend.
+              </p>
+              <ul class="tl-tags">
+                <li>PyTorch</li><li>vLLM</li><li>FastAPI</li><li>Docker / CUDA</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="tl-item" data-reveal data-reveal-delay="1">
+            <div class="tl-marker" aria-hidden="true"><span></span></div>
+            <div class="tl-body">
+              <div class="tl-head">
+                <h3 class="tl-role">LLM Research Assistant</h3>
+                <span class="tl-date mono">2024 &mdash; 2025</span>
+              </div>
+              <p class="tl-org">University Research Group</p>
+              <p class="tl-desc">
+                Trained LoRA adapters across open-weight model families and scaled the runs
+                that no longer fit on one card with DeepSpeed ZeRO. Built the RAG evaluation
+                harness the group needed to trust its own retrieval numbers, and co-authored
+                the write-ups that came out of it.
+              </p>
+              <ul class="tl-tags">
+                <li>LoRA</li><li>DeepSpeed</li><li>RAG</li><li>Evaluation</li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="tl-item" data-reveal data-reveal-delay="2">
+            <div class="tl-marker" aria-hidden="true"><span></span></div>
+            <div class="tl-body">
+              <div class="tl-head">
+                <h3 class="tl-role">Software Business Analyst</h3>
+                <span class="tl-date mono">2023 &mdash; 2024</span>
+              </div>
+              <p class="tl-org">Product Engineering</p>
+              <p class="tl-desc">
+                Sat between the business and the engineers: ran stakeholder workshops, turned
+                vague process descriptions into specs a team could estimate, and wrote the SQL
+                behind the reporting that showed whether any of it worked.
+              </p>
+              <ul class="tl-tags">
+                <li>Requirements</li><li>SQL</li><li>Stakeholder workshops</li><li>Reporting</li>
+              </ul>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ══ research ═══════════════════════════════════════════════════ -->
+    <section class="section" id="research">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span>03 &mdash; Publications</p>
+          <h2 class="section-title">Research <em>papers</em></h2>
+          <p class="section-sub">Work I&rsquo;ve written up, presented, or contributed to.</p>
+        </header>
+
+        <!-- EDIT: replace with your real publications and links -->
+        <div class="papers">
+          <article class="paper" data-reveal data-spotlight>
+            <div class="paper-meta">
+              <span class="paper-year mono">2025</span>
+              <span class="paper-venue">Preprint &middot; arXiv</span>
+            </div>
+            <div class="paper-main">
+              <h3 class="paper-title">
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  Low-Rank Adaptation Under Aggressive Post-Training Quantisation
+                  <svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+                </a>
+              </h3>
+              <p class="paper-abstract">
+                We study how LoRA adapters trained in half precision degrade once the base
+                model is quantised to four bits, and show that adapter placement matters more
+                than adapter rank for retaining task performance on code-reasoning benchmarks.
+              </p>
+              <ul class="paper-tags">
+                <li>Quantisation</li><li>PEFT</li><li>Evaluation</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="paper" data-reveal data-reveal-delay="1" data-spotlight>
+            <div class="paper-meta">
+              <span class="paper-year mono">2025</span>
+              <span class="paper-venue">Workshop paper</span>
+            </div>
+            <div class="paper-main">
+              <h3 class="paper-title">
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  Pedagogical Guardrails for Code-Generating Tutors
+                  <svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+                </a>
+              </h3>
+              <p class="paper-abstract">
+                An LLM tutor that simply hands over the answer teaches nothing. We describe a
+                decoding-time intervention that steers a model toward Socratic hints, and
+                measure the trade-off against raw task completion.
+              </p>
+              <ul class="paper-tags">
+                <li>AI in education</li><li>Decoding</li><li>Human evaluation</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="paper" data-reveal data-reveal-delay="2" data-spotlight>
+            <div class="paper-meta">
+              <span class="paper-year mono">2024</span>
+              <span class="paper-venue">Technical report</span>
+            </div>
+            <div class="paper-main">
+              <h3 class="paper-title">
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  Throughput Characteristics of Batched Inference on Consumer GPUs
+                  <svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+                </a>
+              </h3>
+              <p class="paper-abstract">
+                A measurement study of continuous batching across memory-constrained hardware,
+                with practical guidance on picking concurrency limits before the KV cache
+                becomes the bottleneck.
+              </p>
+              <ul class="paper-tags">
+                <li>Systems</li><li>vLLM</li><li>Benchmarking</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ projects ═══════════════════════════════════════════════════ -->
+    <section class="section" id="projects">
+      <div class="wrap">
+        <header class="section-head" data-reveal>
+          <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span>04 &mdash; Selected work</p>
+          <h2 class="section-title">Projects</h2>
+          <p class="section-sub">Things I&rsquo;ve built that were more than a weekend.</p>
+        </header>
+
+        <!-- EDIT: replace with your real projects and repo links -->
+        <div class="projects">
+          <article class="project card glass tilt" data-reveal data-spotlight>
+            <div class="project-top">
+              <span class="project-index mono">01</span>
+              <a class="project-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+              </a>
+            </div>
+            <h3 class="project-title">Swinburne AI Tutor</h3>
+            <p class="project-body">
+              A programming tutor that reasons about a student&rsquo;s code instead of
+              autocompleting it. Fine-tuned open-weight model, quantised to 4-bit, served
+              behind a streaming FastAPI gateway with a Monaco-based workspace on top.
+            </p>
+            <ul class="chips">
+              <li>Next.js</li><li>FastAPI</li><li>vLLM</li><li>PostgreSQL</li>
+            </ul>
+          </article>
+
+          <article class="project card glass tilt" data-reveal data-reveal-delay="1" data-spotlight>
+            <div class="project-top">
+              <span class="project-index mono">02</span>
+              <a class="project-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+              </a>
+            </div>
+            <h3 class="project-title">LLM Fine-Tuning Pipeline</h3>
+            <p class="project-body">
+              One config file takes a raw dataset through curation, LoRA fine-tuning under
+              DeepSpeed ZeRO, evaluation against a held-out suite, and export to a quantised
+              artefact &mdash; with every run tracked so results stay comparable.
+            </p>
+            <ul class="chips">
+              <li>PyTorch</li><li>LoRA</li><li>DeepSpeed</li><li>Weights &amp; Biases</li>
+            </ul>
+          </article>
+
+          <article class="project card glass tilt" data-reveal data-reveal-delay="2" data-spotlight>
+            <div class="project-top">
+              <span class="project-index mono">03</span>
+              <a class="project-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+              </a>
+            </div>
+            <h3 class="project-title">Interactive Data Dashboard</h3>
+            <p class="project-body">
+              An analytics front end for a warehouse that was previously only reachable by
+              writing SQL: cross-filtering, drill-through from any chart to the underlying
+              rows, and query results that stay responsive as filters compound.
+            </p>
+            <ul class="chips">
+              <li>TypeScript</li><li>React</li><li>D3</li><li>PostgreSQL</li>
+            </ul>
+          </article>
+
+          <article class="project card glass tilt" data-reveal data-reveal-delay="3" data-spotlight>
+            <div class="project-top">
+              <span class="project-index mono">04</span>
+              <a class="project-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Open project">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 16 16 8" /><path d="M9.5 8H16v6.5" /></svg>
+              </a>
+            </div>
+            <h3 class="project-title">RAG Retrieval Service</h3>
+            <p class="project-body">
+              Document ingestion, chunking, embedding and reranking behind a single API, with
+              an eval set that catches retrieval regressions before they reach the model &mdash;
+              because a confident answer over the wrong passage is the worst failure mode.
+            </p>
+            <ul class="chips">
+              <li>Python</li><li>FastAPI</li><li>pgvector</li><li>RAG</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ contact ════════════════════════════════════════════════════ -->
+    <section class="section" id="contact">
+      <div class="wrap contact-grid">
+        <div class="contact-copy" data-reveal>
+          <p class="kicker"><span class="kicker-dot" aria-hidden="true"></span>05 &mdash; Contact</p>
+          <h2 class="section-title">Let&rsquo;s build <em>something</em></h2>
+          <p class="section-sub">
+            Research collaborations, applied ML work, or a conversation about getting a model
+            into production &mdash; all welcome. I usually reply within a day or two.
+          </p>
+
+          <div class="contact-direct">
+            <button class="copy-mail" id="copyMail" type="button" data-mail="alwin@example.com">
+              <span class="mono" id="copyMailLabel">alwin@example.com</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.4" /><path d="M15 5.5A2.5 2.5 0 0 0 12.5 3h-7A2.5 2.5 0 0 0 3 5.5v7A2.5 2.5 0 0 0 5.5 15" /></svg>
+            </button>
+            <ul class="socials socials-inline" aria-label="Elsewhere">
+              <li><a class="social" href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-tip="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13Zm1.78 13.02H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z" /></svg></a></li>
+              <li><a class="social" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" data-tip="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.23c-3.34.72-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.53.11-3.18 0 0 1.01-.32 3.3 1.23a11.4 11.4 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.65.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.83.58A12 12 0 0 0 12 .3Z" /></svg></a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Static site: submitting opens the visitor's own mail client with the message
+             prefilled. To use a backend instead, set action="https://formspree.io/f/xxxx"
+             method="post" and delete the JS handler in main.js. -->
+        <form class="contact-form glass" id="contactForm" novalidate data-reveal data-reveal-delay="1">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required />
+            <p class="field-error" data-error-for="name"></p>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@domain.com" required />
+            <p class="field-error" data-error-for="email"></p>
+          </div>
+
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="What are you working on?" required></textarea>
+            <p class="field-error" data-error-for="message"></p>
+          </div>
+
+          <button class="btn btn-solid btn-block" type="submit">
+            <span>Send message</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13" /><path d="m12.5 5.5 6.5 6.5-6.5 6.5" /></svg>
+          </button>
+
+          <p class="form-note" id="formNote" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══ footer ═══════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="#hero" aria-label="Back to top">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <rect class="mark-plate" width="32" height="32" rx="9" />
+            <g class="mark-glyph" fill="none" stroke-width="2.6" stroke-linecap="butt" stroke-linejoin="miter">
+              <path d="M8.5 24 16 8.5 23.5 24" />
+              <path d="M11.4 18.4h9.2" />
+            </g>
+          </svg>
+        </span>
+      </a>
+
+      <p class="footer-title">Alwin&rsquo;s Portfolio</p>
+
+      <ul class="socials socials-footer" aria-label="Elsewhere">
+        <li><a class="social" href="https://www.linkedin.com/in/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" data-tip="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13Zm1.78 13.02H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z" /></svg></a></li>
+        <li><a class="social" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" data-tip="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.23c-3.34.72-4.04-1.42-4.04-1.42-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.53.11-3.18 0 0 1.01-.32 3.3 1.23a11.4 11.4 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.65.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.83.58A12 12 0 0 0 12 .3Z" /></svg></a></li>
+        <li><a class="social" href="mailto:alwin@example.com" aria-label="Email" data-tip="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.6" y="4.8" width="18.8" height="14.4" rx="3" /><path d="m3.6 8 8.4 5.6L20.4 8" /></svg></a></li>
+      </ul>
+
+      <p class="footer-fine mono">&copy; <span id="year">2026</span> &middot; Built from scratch</p>
+    </div>
+  </footer>
+
+  <script src="main.js" defer></script>
+</body>
+</html>
