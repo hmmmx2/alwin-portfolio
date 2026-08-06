@@ -1,0 +1,84 @@
+# The whole portfolio: Express API, Next.js front end, and the SQLite volume
+# they sit on. @portfolio/shared is not a service — it is TypeScript source,
+# compiled into both images at build time.
+#
+#     docker compose up --build
+#     -> http://localhost:3100
+#
+# Copy .env.docker.example to .env first if you want to change any of it.
+
+# Pinned rather than inferred from the directory name. Compose derives the
+# project name — and therefore the volume prefix — from whatever folder this
+# sits in, so moving or renaming the checkout would silently orphan `api-data`
+# and start the site on an empty database.
+name: portfolio
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    image: portfolio-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 4100
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Lives on the named volume below, so messages and analytics survive a
+      # rebuild. Relative to the image's /repo workdir.
+      DATABASE_URL: file:./data/portfolio.db
+      RESUME_PATH: ./assets/resume.pdf
+      # Must match the origin the *browser* uses, not the compose hostname —
+      # CORS is enforced against what the browser sends.
+      CORS_ORIGINS: ${PUBLIC_WEB_URL:-http://localhost:3100}
+      # Stands between the analytics table and a per-visitor identifier.
+      # Override in .env before this faces the internet.
+      ANALYTICS_SALT: ${ANALYTICS_SALT:-portfolio-dev-salt}
+      MAIL_ENABLED: ${MAIL_ENABLED:-false}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_SECURE: ${MAIL_SECURE:-false}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      MAIL_TO: ${MAIL_TO:-}
+    volumes:
+      - api-data:/repo/data
+      # Drop resume.pdf into api/assets/ on the host and it is served without a
+      # rebuild. Read-only: nothing in the API writes here.
+      - ./api/assets:/repo/assets:ro
+    ports:
+      - "${API_PORT:-4100}:4100"
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+      args:
+        # Build args, not environment. Next inlines NEXT_PUBLIC_* into the
+        # client bundle when the image is built, so changing these afterwards
+        # requires `--build` — putting them under `environment:` would silently
+        # do nothing.
+        NEXT_PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:4100}
+        NEXT_PUBLIC_SITE_URL: ${PUBLIC_WEB_URL:-http://localhost:3100}
+    image: portfolio-web
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3100
+      # Server-side fetches only. `localhost` in here is this container, so
+      # server components have to address the API by its compose service name.
+      API_INTERNAL_URL: http://api:4100
+    ports:
+      - "${WEB_PORT:-3100}:3100"
+    depends_on:
+      api:
+        # Waits for /api/health, not just for the process to exist — otherwise
+        # the first page render races the API's boot migration and falls back
+        # to bundled content for the length of the revalidate window.
+        condition: service_healthy
+
+volumes:
+  api-data:

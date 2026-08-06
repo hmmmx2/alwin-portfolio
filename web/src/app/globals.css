@@ -1,0 +1,338 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens
+   --------------------------------------------------------------------------
+   Two deliberately separate groups:
+
+   1. @theme  — compile-time tokens. Tailwind inlines these into the utilities
+      it generates, which is exactly what we want for colours, type and radii.
+
+   2. :root   — runtime tokens. Anything a component or media query needs to
+      override at runtime MUST live here. Values declared inside @theme are
+      baked into the utility class at build time, so a scoped override of one
+      silently does nothing.
+   ========================================================================== */
+
+@theme {
+  /* Surfaces, ported from the design's hex values. */
+  --color-void: #050506;
+  --color-void-deep: #070708;
+  --color-void-low: #0a0a0c;
+  --color-panel: #0b0c0e;
+
+  /* Ink. `ink` is the design's #f4f5f6; the muted steps are the alpha ladder
+     the design applied ad hoc, collected into named tokens. */
+  --color-ink: #f4f5f6;
+  --color-ink-bright: #ffffff;
+  --color-ink-soft: rgb(244 245 246 / 0.78);
+  /* Body copy. The design used .46 alpha (~3.4:1 on #050506, below WCAG AA);
+     lifted to .62 (~5.1:1) for anything that is actually prose. */
+  --color-ink-muted: rgb(244 245 246 / 0.62);
+  /* Decorative labels and eyebrows only — never a full sentence. */
+  --color-ink-faint: rgb(244 245 246 / 0.4);
+  --color-ink-ghost: rgb(244 245 246 / 0.3);
+
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.22);
+  --color-glass: rgb(255 255 255 / 0.045);
+  --color-glass-hover: rgb(255 255 255 / 0.1);
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
+
+  --radius-pill: 999px;
+  --radius-card: 20px;
+  --radius-panel: 22px;
+  --radius-tile: 11px;
+
+  --shadow-nav: 0 20px 50px rgb(0 0 0 / 0.6), inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --shadow-card: 0 20px 50px rgb(0 0 0 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.05);
+  --shadow-panel: 0 24px 60px rgb(0 0 0 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.05);
+  /* Hero portrait disc. A token rather than a `shadow-[…]` arbitrary value:
+     multi-layer shadows with commas silently compile to nothing there. */
+  --shadow-portrait: 0 20px 50px rgb(0 0 0 / 0.45),
+    inset 0 1px 0 rgb(255 255 255 / 0.1);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  /* Runtime-tunable. The design exposed these as editor props; here they are
+     plain custom properties any ancestor or media query can override. */
+  --glass-blur: 16px;
+  --ascii-opacity: 0.55;
+
+  /* The hero's typographic unit. Everything in the hero — the wave field, the
+     illustration box, its vertical offset — is expressed in multiples of this,
+     which is how the original kept them locked together across viewports. */
+  --cell: max(min(100vw / 118, 100vh / 60), 8px);
+
+  /* Written by the scroll loop; read by the hero's parallax and fade. */
+  --hero-progress: 0;
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  /* The nav is a fixed pill, so anchored sections need to clear it. */
+  scroll-padding-top: 6.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* The page's own gradient wash sits behind everything and does not scroll
+     away, matching the design's fixed radial stack. */
+  background-image:
+    radial-gradient(1100px 620px at 50% 6%, #17181c 0%, rgb(9 9 11 / 0) 62%),
+    radial-gradient(900px 500px at 88% 88%, #121316 0%, rgb(9 9 11 / 0) 60%),
+    linear-gradient(180deg, #070708 0%, #050506 40%, #0a0a0c 100%);
+  background-attachment: fixed;
+}
+
+::selection {
+  background: rgb(255 255 255 / 0.16);
+}
+
+/* One consistent focus treatment. The source design had no focus styles at all,
+   which made the whole page unusable by keyboard. */
+:focus-visible {
+  outline: 2px solid rgb(244 245 246 / 0.75);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Animation
+   ========================================================================== */
+
+@keyframes haze {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/*
+ * Drift only — no horizontal component.
+ *
+ * The design's version baked `translate(-50%, 0)` into the keyframe because it
+ * also did the centring. Tailwind v4 centres with the standalone `translate`
+ * property, which composes with `transform` rather than replacing it, so
+ * repeating the -50% here shifts the field a full width to the left.
+ */
+@keyframes ascii-drift {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.012);
+  }
+}
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rule-wipe {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes timeline-draw {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.animate-haze {
+  animation: haze 9s ease-in-out infinite;
+}
+
+.animate-ascii-drift {
+  animation: ascii-drift 11s ease-in-out infinite;
+}
+
+/*
+ * Reveal-on-scroll. A single page-level IntersectionObserver adds
+ * `data-revealed` to each element; `--reveal-index` staggers siblings without
+ * needing a timer per item.
+ */
+[data-reveal] {
+  opacity: 0;
+}
+
+[data-reveal][data-revealed] {
+  animation: reveal-rise 0.7s var(--ease-out-soft) both;
+  animation-delay: calc(var(--reveal-index, 0) * 60ms);
+}
+
+/* The gradient rule beside each section number wipes in from the left. */
+[data-reveal][data-revealed] .section-rule {
+  transform-origin: left center;
+  animation: rule-wipe 0.9s var(--ease-out-soft) 0.15s both;
+}
+
+/*
+ * The experience timeline's spine draws itself as the section scrolls past.
+ * Scroll-driven where supported, with a plain reveal as the fallback.
+ */
+.timeline-spine {
+  transform-origin: top center;
+  transform: scaleY(0);
+}
+
+[data-revealed] .timeline-spine {
+  animation: timeline-draw 1.1s var(--ease-out-soft) both;
+}
+
+@supports (animation-timeline: view()) {
+  .timeline-spine {
+    animation: timeline-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 10% cover 45%;
+  }
+}
+
+/*
+ * Footer wordmark. Rises and settles as the footer enters view — the same
+ * scroll-driven technique, degrading to a static wordmark without it.
+ */
+@keyframes wordmark-settle {
+  from {
+    transform: translate3d(0, 26%, 0) scale(1.06);
+    opacity: 0.55;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .wordmark {
+    animation: wordmark-settle linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}
+
+/* The contact button's check mark draws itself on success. */
+@keyframes check-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.check-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: check-draw 0.45s var(--ease-out-soft) forwards;
+}
+
+/*
+ * Pointer spotlight. --spot-x/--spot-y are written by a rAF-batched pointer
+ * handler; the gradient itself is pure CSS so moving the mouse never triggers
+ * a React render.
+ */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out-soft);
+  background: radial-gradient(
+    240px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgb(255 255 255 / 0.09),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.spotlight[data-active="true"]::before {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Reduced motion
+   --------------------------------------------------------------------------
+   Everything above is either switched off or reduced to its end state. The
+   wave field checks the same query in JS and never schedules a frame.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-haze,
+  .animate-ascii-drift {
+    animation: none;
+  }
+
+  [data-reveal],
+  [data-reveal][data-revealed] {
+    opacity: 1;
+    animation: none;
+  }
+
+  .timeline-spine,
+  [data-revealed] .timeline-spine {
+    transform: none;
+    animation: none;
+  }
+
+  .wordmark {
+    animation: none;
+  }
+
+  .check-path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .spotlight::before {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

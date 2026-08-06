@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio-api",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["-C", "api", "dev"],
+      "port": 4100
+    },
+    {
+      "name": "portfolio-web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["-C", "web", "dev"],
+      "port": 3100
+    },
+    {
+      "name": "portfolio-web-prod",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["-C", "web", "start"],
+      "port": 3100
+    }
+  ]
+}
