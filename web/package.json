@@ -2,7 +2,7 @@
   "name": "@portfolio/web",
   "version": "1.0.0",
   "private": true,
-  "description": "Alwin's portfolio front end \u2014 Next.js App Router, React Server Components, Tailwind v4.",
+  "description": "Alwin's portfolio front end — Next.js App Router, React Server Components, Tailwind v4.",
   "scripts": {
     "dev": "next dev --port 3100",
     "build": "next build",
@@ -15,29 +15,30 @@
     "db:push": "tsx scripts/db-push.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.14.0",
     "@portfolio/shared": "workspace:*",
+    "drizzle-orm": "^0.38.4",
     "next": "^16.1.6",
+    "nodemailer": "^6.10.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "simple-icons": "^13.21.0",
-    "zod": "^3.24.1",
-    "@libsql/client": "^0.14.0",
-    "drizzle-orm": "^0.38.4",
-    "nodemailer": "^6.10.0"
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.10.7",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
+    "dotenv": "^17.4.2",
     "eslint": "^9.18.0",
     "eslint-config-next": "^16.1.6",
     "rimraf": "^6.0.1",
     "tailwindcss": "^4.0.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0",
-    "@types/nodemailer": "^6.4.17",
-    "tsx": "^4.19.2",
     "vitest": "^2.1.8"
   }
 }

@@ -57,7 +57,16 @@ workspace, which is what lets `@portfolio/shared` resolve.
 | `NEXT_PUBLIC_SITE_URL` | `https://www.alwint.dev` |
 | `MAIL_*` | optional; without them a message is stored and logged, not sent |
 
-Then `pnpm db:push` once against the Turso database.
+**Set them once, in a file, not a shell.** Copy `web/.env.example` to
+`web/.env.local` and fill in the values. That single file does both jobs:
+
+- `pnpm db:push` reads it, so the schema goes to Turso without exporting
+  anything. Its output names the target -- if it says *local file*, the
+  variables did not reach it.
+- Vercel's environment-variable screen imports a `.env` file directly, so the
+  same file populates the deployment.
+
+`.env.local` is gitignored and must stay that way.
 
 ### Capacity
 
