@@ -3,14 +3,16 @@ import path from "node:path";
 import type { NextConfig } from "next";
 
 /**
- * The portfolio workspace root — one level up from this package.
+ * The pnpm workspace root — one level up from this package.
  *
- * It has to be stated explicitly. This app lives inside a much larger
- * repository, and left to itself Next walks up looking for a lockfile and
- * picks the outer project's root, which pulls unrelated files into the build
- * graph. Pointing both Turbopack and output tracing here keeps the build
- * scoped to `portfolio/` while still resolving `next` and `@portfolio/shared`
- * from the workspace's node_modules.
+ * Stated explicitly rather than inferred. `@portfolio/shared` is a workspace
+ * link, so both Turbopack and output tracing have to be rooted where its
+ * source and the shared node_modules actually live; rooted at `web/` they
+ * would miss it.
+ *
+ * (This used to guard against something else: the app lived inside a much
+ * larger repository, and Next walked up to the wrong lockfile. That repository
+ * is no longer in the picture, but the workspace reason still stands.)
  */
 const workspaceRoot = path.resolve(process.cwd(), "..");
 
@@ -18,20 +20,21 @@ const config: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   /*
-   * Emits `.next/standalone` — a server plus only the node_modules it actually
-   * traced — so the Docker runtime stage needs no package manager and no
-   * install step. Combined with `outputFileTracingRoot` below, the workspace
-   * link to @portfolio/shared is traced correctly rather than left dangling.
+   * No `output: "standalone"`.
+   *
+   * It existed for the Docker image, which is gone, and Vercel manages its own
+   * output format: with standalone set, Vercel's post-build step looked for
+   * `.next/next-server.js.nft.json` and the build failed with ENOENT. The file
+   * is written on a normal build.
    */
-  output: "standalone",
   // @portfolio/shared ships TypeScript source rather than a build artifact, so
   // Next has to compile it like first-party code.
   transpilePackages: ["@portfolio/shared"],
   turbopack: { root: workspaceRoot },
   outputFileTracingRoot: workspaceRoot,
   /*
-   * Static headers only. The CSP is not here -- it carries a per-request nonce
-   * and so has to come from middleware.ts.
+   * All security headers, including the CSP. See the note on the CSP entry
+   * below for why it is static rather than nonce-based.
    */
   async headers() {
     return [
