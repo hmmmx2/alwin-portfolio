@@ -46,6 +46,20 @@ analytics beacon read any of it.
 Vercel, from the repository root — `vercel.json` already points the build at the
 workspace, which is what lets `@portfolio/shared` resolve.
 
+Two things about that file are easy to get wrong, and both cost a failed
+deploy here:
+
+- `installCommand` runs at the repository root, so the pnpm workspace resolves;
+  the build is then filtered to the web package.
+- **`outputDirectory` is relative to the directory Vercel resolves the Next app
+  to, not to the repository root.** Vercel already finds the app in `web/`, so
+  `"web/.next"` becomes `/vercel/path0/web/web/.next` and the deploy fails on a
+  doubled path. It must be `".next"`.
+
+Also do not set `output: "standalone"` in `next.config.ts`. It exists for
+self-hosting, and with it set Vercel's post-build step cannot find the trace
+manifest it expects.
+
 **Environment variables to set in Vercel:**
 
 | Variable | Notes |
