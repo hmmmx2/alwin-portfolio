@@ -70,7 +70,7 @@ export function createMailer(): Mailer {
          * display name says. That is why the visitor's name moved into the
          * subject, and why sending from a domain address is the real fix.
          */
-        from: { name: "alwint.dev", address: env().MAIL_FROM! },
+        from: { name: env().MAIL_FROM_NAME ?? "alwint.dev", address: env().MAIL_FROM! },
         to: env().MAIL_TO,
         // The visitor's address goes in Reply-To, never in From: sending as
         // them would fail SPF/DMARC and land the whole thing in spam.

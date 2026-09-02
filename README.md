@@ -78,10 +78,37 @@ in place: the visitor's name is in the subject (`Portfolio · Name — Subject`)
 and every message carries an `X-Portfolio-Contact: 1` header to filter and
 label on.
 
-The actual fix is to send from the domain rather than the Gmail account, e.g.
-Resend with `contact@alwint.dev` verified by DNS. Then `MAIL_FROM` differs from
-`MAIL_TO`, the row shows the sender, and delivery no longer depends on a
-personal app password.
+The actual fix is to send from the domain rather than the Gmail account.
+
+### Sending through Resend
+
+Resend speaks SMTP, so this is configuration rather than code -- the same
+nodemailer transport, different values.
+
+1. Sign up at [resend.com](https://resend.com) and add the domain `alwint.dev`.
+2. Resend gives three DNS records: a `TXT` for DKIM, an `MX` and a `TXT` for
+   the return path (usually on a `send.` subdomain). Add them in **Cloudflare**,
+   which is where this domain's nameservers point. Set those records to **DNS
+   only** -- proxying them (the orange cloud) breaks verification, and it is
+   the usual reason a Cloudflare-hosted domain will not verify.
+3. Wait for Resend to show the domain as Verified.
+4. Create an API key, then set:
+
+   | | |
+   | --- | --- |
+   | `MAIL_HOST` | `smtp.resend.com` |
+   | `MAIL_PORT` | `587` |
+   | `MAIL_USER` | `resend` (the literal string) |
+   | `MAIL_PASSWORD` | the API key, `re_...` |
+   | `MAIL_FROM` | `contact@alwint.dev` |
+   | `MAIL_FROM_NAME` | whatever should appear as the sender |
+   | `MAIL_TO` | where the notification should land |
+
+`MAIL_FROM` must be on the verified domain -- Resend rejects anything else, so
+a typo here fails at send time rather than at deploy. There is no mailbox
+behind `contact@alwint.dev`: it is a sending identity, and replies go to the
+visitor through `Reply-To` regardless. Add a Cloudflare Email Routing rule if
+you want mail sent *to* that address to reach you.
 
 **Set them once, in a file, not a shell.** Copy `web/.env.example` to
 `web/.env.local` and fill in the values. That single file does both jobs:

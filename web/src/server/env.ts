@@ -62,6 +62,12 @@ const EnvSchema = z.object({
   MAIL_USER: optionalText,
   MAIL_PASSWORD: optionalText,
   MAIL_FROM: optionalText,
+  /**
+   * Display name on the From line. Worth setting once mail goes out from a
+   * domain address rather than a personal mailbox, because that is the point
+   * at which a recipient's client actually shows it.
+   */
+  MAIL_FROM_NAME: optionalText,
   MAIL_TO: optionalText,
 });
 
