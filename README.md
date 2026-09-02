@@ -69,13 +69,13 @@ compute.
 
 ### Country allowlist
 
-Requests from outside **US, MY, SG, GB, IE, FR, DE, JP, TW, CA** get a 403,
+Requests from outside **US, MY, SG, GB, IE, FR, DE, JP, TW, CA, AU** get a 403,
 implemented in `web/src/middleware.ts`.
 
 **Be clear about what this is.** An IP allowlist is a traffic filter, not a
 security control — one VPN click defeats it. What it definitely does is turn
-away real recruiters in Australia, India, the UAE, the Netherlands and
-Switzerland. It is a deliberate trade, and `ALLOWED_COUNTRIES` exists so a
+away real recruiters in India, the UAE, the Netherlands, Switzerland and
+New Zealand. It is a deliberate trade, and `ALLOWED_COUNTRIES` exists so a
 country can be added without a deploy.
 
 Two carve-outs keep it from doing damage it was not meant to do:

@@ -20,7 +20,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * a security control. One VPN click defeats it, and it blocks genuine
  * recruiters everywhere outside this list.
  */
-const DEFAULT_ALLOWED = ["US", "MY", "SG", "GB", "IE", "FR", "DE", "JP", "TW", "CA"];
+const DEFAULT_ALLOWED = ["US", "MY", "SG", "GB", "IE", "FR", "DE", "JP", "TW", "CA", "AU"];
 
 const ALLOWED = new Set(
   (process.env.ALLOWED_COUNTRIES ?? DEFAULT_ALLOWED.join(","))
