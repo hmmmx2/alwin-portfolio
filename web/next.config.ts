@@ -104,6 +104,28 @@ const config: NextConfig = {
         ],
       },
       {
+        /*
+         * Name the PDF for downloads without forcing one.
+         *
+         * The static handler sends `Content-Disposition: inline;
+         * filename="resume.pdf"` from the name on disk, and a server-supplied
+         * filename *overrides* the `download` attribute on the link -- so the
+         * saved file was "resume.pdf" no matter what the anchor asked for.
+         *
+         * `inline` is kept, so the preview iframe still renders it in place
+         * rather than triggering a download; only the suggested name changes.
+         * This also fixes the save button inside the browser's own PDF viewer,
+         * which never saw the anchor's attribute at all.
+         */
+        source: "/resume.pdf",
+        headers: [
+          {
+            key: "Content-Disposition",
+            value: 'inline; filename="CV_ Alwin Tay Jing Xue.pdf"',
+          },
+        ],
+      },
+      {
         // Immutable content-hashed asset; the resume is not, so it is excluded.
         source: "/alwin.:hash.webp",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
