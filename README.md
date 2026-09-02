@@ -80,7 +80,7 @@ compute.
 
 Requests from outside **US, MY, SG, GB, IE, FR, DE, JP, TW, CA, AU, NL, CH,
 NZ** get a 403,
-implemented in `web/src/middleware.ts`.
+implemented in `web/src/proxy.ts`.
 
 **Be clear about what this is.** An IP allowlist is a traffic filter, not a
 security control — one VPN click defeats it. What it definitely does is turn
@@ -101,13 +101,19 @@ Two carve-outs keep it from doing damage it was not meant to do:
 
 ### Security
 
-- **CSP with a per-request nonce**, built in the middleware because a static
-  header cannot carry one. Locked to `'self'` throughout — achievable only
-  because the design self-hosts its fonts and inlines its icons, with no CDN.
-  `style-src` keeps `'unsafe-inline'`, which Tailwind and `next/font` require.
-- **Static headers** in `next.config.ts`: HSTS with preload, `nosniff`,
-  `Referrer-Policy`, `X-Frame-Options: DENY`, and a `Permissions-Policy`
-  denying camera, microphone and geolocation.
+- **CSP locked to `'self'`**, in `next.config.ts`. A nonce-based policy with
+  `'strict-dynamic'` was written first and then measured: Next 16 under
+  Turbopack emits no `nonce=` attribute on its own script tags, so every chunk
+  the app needs was blocked. `script-src` therefore keeps `'unsafe-inline'` —
+  the honest trade, and a narrow one here because nothing on this site renders
+  user input as HTML, so there is no reflected-XSS surface to inject through.
+  Same-origin everywhere else, achievable only because the design self-hosts
+  its fonts and inlines its icons with no CDN.
+- **Other headers** in `next.config.ts`: HSTS with preload, `nosniff`,
+  `Referrer-Policy`, `X-Frame-Options: SAMEORIGIN` (not `DENY` — the resume
+  preview embeds `/resume.pdf` from this same origin),
+  `Cross-Origin-Resource-Policy`, and a `Permissions-Policy` denying camera,
+  microphone and geolocation.
 - **Rate limiting in the database**, not in memory. `express-rate-limit` counted
   per process, which on serverless resets on every cold start — it would have
   looked like it worked while enforcing nothing. Contact is 5/hour, analytics

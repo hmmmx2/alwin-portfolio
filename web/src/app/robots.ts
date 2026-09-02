@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100";
 
 /**
- * robots.txt asks; `middleware.ts` enforces.
+ * robots.txt asks; `proxy.ts` enforces.
  *
  * Both exist because several of the crawlers named here have been observed
  * ignoring the file entirely. Stating it anyway matters: it is the difference

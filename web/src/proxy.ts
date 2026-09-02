@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from "next/server";
 /**
  * The country allowlist, plus the bot and scanner filter.
  *
+ * `src/proxy.ts`, not `src/middleware.ts`: Next 16 renamed the convention and
+ * warns on the old filename. Same execution model -- it runs on the edge,
+ * before every matched request.
+ *
  * The CSP is deliberately *not* here. It was, carrying a per-request nonce,
  * until measuring the rendered HTML showed zero `nonce=` attributes: Next 16
  * under Turbopack does not propagate a nonce from the request header onto its
@@ -126,7 +130,7 @@ function blocked(country: string): NextResponse {
   });
 }
 
-export function middleware(request: NextRequest): NextResponse {
+export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const agent = request.headers.get("user-agent") ?? "";
 
@@ -171,7 +175,7 @@ export function middleware(request: NextRequest): NextResponse {
 export const config = {
   /*
    * Everything except Next's static output and the image optimiser: those are
-   * high-volume, carry no country-specific content, and running middleware on
+   * high-volume, carry no country-specific content, and running this on
    * them would multiply invocations for nothing.
    */
   matcher: ["/((?!_next/static|_next/image).*)"],
