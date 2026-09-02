@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ContentPayload, ResumeMeta } from "@portfolio/shared";
 
 import { BrandIcon } from "@/components/ui/BrandIcon";
+import { EmailLink } from "@/components/ui/EmailLink";
 import { MailIcon } from "@/components/ui/icons";
 import { resumeUrl } from "@/lib/api";
 
@@ -128,13 +129,10 @@ export function SiteFooter({
               <BrandIcon name="github" className="size-[15px]" />
             </a>
           ) : null}
-          <a
-            href={`mailto:${profile.email}`}
-            aria-label={`Email ${profile.email}`}
-            className={socialTile}
-          >
+          <EmailLink email={profile.email} className={socialTile}>
             <MailIcon className="size-4" />
-          </a>
+            <span className="sr-only">Email {profile.email}</span>
+          </EmailLink>
         </div>
       </div>
 

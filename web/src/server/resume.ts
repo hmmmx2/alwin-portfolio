@@ -12,13 +12,25 @@ import type { ResumeMeta } from "@portfolio/shared";
  */
 const RESUME_FILE = join(process.cwd(), "public", "resume.pdf");
 
+/**
+ * What the file is called when someone saves it.
+ *
+ * Distinct from the URL on purpose: `/resume.pdf` stays short and stable for
+ * links and the preview iframe, while the saved file carries a name that means
+ * something in a recruiter's downloads folder. The `download` attribute does
+ * the renaming, and works now only because the PDF is same-origin -- browsers
+ * ignore it across origins, which is why this was not worth doing while the
+ * API served the file from another port.
+ */
+export const RESUME_DOWNLOAD_NAME = "CV_ Alwin Tay Jing Xue.pdf";
+
 export async function getResumeMeta(): Promise<ResumeMeta> {
   try {
     const stats = await stat(RESUME_FILE);
     if (!stats.isFile()) throw new Error("not a file");
     return {
       available: true,
-      filename: "resume.pdf",
+      filename: RESUME_DOWNLOAD_NAME,
       bytes: stats.size,
       updatedAt: stats.mtime.toISOString(),
     };

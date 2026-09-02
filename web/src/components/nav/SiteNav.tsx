@@ -6,6 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 
 import type { ResumeMeta } from "@portfolio/shared";
 
+import { EmailLink } from "@/components/ui/EmailLink";
 import { Logo } from "@/components/ui/Logo";
 import { CloseIcon, DownloadIcon, MailIcon, MenuIcon } from "@/components/ui/icons";
 import { resumeUrl } from "@/lib/api";
@@ -220,13 +221,13 @@ export function SiteNav({ email, resume }: { email: string; resume: ResumeMeta }
 
         <div aria-hidden="true" className="mx-2 h-[22px] w-px shrink-0 bg-[rgb(255_255_255/0.1)]" />
 
-        <a
-          href={`mailto:${email}`}
-          aria-label={`Email ${email}`}
+        <EmailLink
+          email={email}
           className="flex size-[34px] shrink-0 items-center justify-center rounded-full border border-[rgb(255_255_255/0.12)] text-ink-muted transition-colors duration-300 hover:border-line-strong hover:bg-glass hover:text-ink-bright"
         >
           <MailIcon className="size-4" />
-        </a>
+          <span className="sr-only">Email {email}</span>
+        </EmailLink>
 
         {/*
           Always present, as in the design. The label collapses to just the

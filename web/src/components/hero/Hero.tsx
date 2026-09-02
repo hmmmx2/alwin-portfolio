@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Profile } from "@portfolio/shared";
 
 import { BrandIcon } from "@/components/ui/BrandIcon";
+import { EmailLink } from "@/components/ui/EmailLink";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 import { MailIcon } from "@/components/ui/icons";
 
@@ -218,13 +219,13 @@ export function Hero({ profile }: { profile: Profile }) {
                 <BrandIcon name="github" className="size-[15px]" />
               </a>
             ) : null}
-            <a
-              href={`mailto:${profile.email}`}
+            <EmailLink
+              email={profile.email}
               className="inline-flex items-center gap-2 border-b border-[rgb(255_255_255/0.16)] pb-[3px] font-mono text-[12.5px] leading-none tracking-[0.02em] text-ink-muted transition-colors duration-300 hover:border-[rgb(255_255_255/0.5)] hover:text-ink-bright"
             >
               <MailIcon className="size-[13px]" />
               {profile.email}
-            </a>
+            </EmailLink>
           </div>
         </div>
       </div>

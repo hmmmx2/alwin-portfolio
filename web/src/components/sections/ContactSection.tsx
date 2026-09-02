@@ -1,6 +1,7 @@
 import type { Profile } from "@portfolio/shared";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { EmailLink } from "@/components/ui/EmailLink";
 
 import { ContactForm } from "./ContactForm";
 import { SectionHeader } from "./SectionHeader";
@@ -24,12 +25,10 @@ export function ContactSection({ profile }: { profile: Profile }) {
             beside this is the other way to reach me.
           */}
           <address className="mt-[26px] font-mono text-[12.5px] not-italic leading-[1.9] text-ink-muted">
-            <a
-              href={`mailto:${profile.email}`}
+            <EmailLink
+              email={profile.email}
               className="transition-colors hover:text-ink-bright"
-            >
-              {profile.email}
-            </a>
+            />
           </address>
         </div>
 
