@@ -2,22 +2,22 @@
   "name": "portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Alwin's portfolio — Next.js front end, Express API, shared TypeScript contract.",
+  "description": "Alwin's portfolio \u2014 Next.js front end with a shared TypeScript contract, deployed on Vercel.",
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=20.11"
+    "node": ">=22"
   },
   "scripts": {
-    "dev": "concurrently -n api,web -c magenta,cyan \"pnpm --filter @portfolio/api dev\" \"pnpm --filter @portfolio/web dev\"",
-    "build": "pnpm --filter @portfolio/api build && pnpm --filter @portfolio/web build",
-    "start": "concurrently -n api,web -c magenta,cyan \"pnpm --filter @portfolio/api start\" \"pnpm --filter @portfolio/web start\"",
+    "dev": "pnpm --filter @portfolio/web dev",
+    "build": "pnpm --filter @portfolio/web build",
+    "start": "pnpm --filter @portfolio/web start",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "test": "pnpm --filter @portfolio/api test",
+    "test": "pnpm --filter @portfolio/web test",
+    "db:push": "pnpm --filter @portfolio/web db:push",
     "clean": "pnpm -r clean"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
     "typescript": "^5.7.3"
   }
 }

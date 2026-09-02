@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 
-import { API_BASE } from "@/lib/api";
 
 /**
  * Reports one pageview per navigation.
@@ -31,7 +30,7 @@ export function Analytics() {
     if (reported.has(path)) return;
     reported.add(path);
 
-    void fetch(`${API_BASE}/api/analytics/pageview`, {
+    void fetch("/api/analytics/pageview", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({

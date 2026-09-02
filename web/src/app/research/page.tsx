@@ -16,7 +16,7 @@ export const metadata: Metadata = {
  * a PDF iframe is visibly glitchy.
  */
 export default async function ResearchPage() {
-  const { research } = await getContent();
+  const { research } = getContent();
 
   // Derived rather than written down, so the line can't go stale when a paper
   // is added.

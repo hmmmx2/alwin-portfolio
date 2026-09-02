@@ -4,7 +4,8 @@ import { ExperienceTimeline } from "@/components/experience/ExperienceTimeline";
 import { ResumeCard } from "@/components/experience/ResumeCard";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import { Reveal } from "@/components/ui/Reveal";
-import { getContent, getResumeMeta } from "@/lib/api";
+import { getContent } from "@/lib/api";
+import { getResumeMeta } from "@/server/resume";
 
 export const metadata: Metadata = {
   // The layout's `%s — Alwin` template supplies the rest.
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ExperiencePage() {
-  const [content, resume] = await Promise.all([getContent(), getResumeMeta()]);
+  const content = getContent();
+  const resume = await getResumeMeta();
   const { experience, stack, profile } = content;
 
   return (

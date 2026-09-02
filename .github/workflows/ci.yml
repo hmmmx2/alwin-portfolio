@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Vercel builds independently; this is the gate that stops a broken commit
+# reaching main in the first place.
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm -r typecheck
+      - run: pnpm -r lint
+      - run: pnpm test
+
+      - name: Build
+        run: pnpm build
+        env:
+          # The build reads none of the real secrets — content is compiled in
+          # and every page is static — but env parsing rejects the example salt
+          # in production, so CI supplies a throwaway one.
+          ANALYTICS_SALT: ci-build-salt-not-used-at-runtime
+          NEXT_PUBLIC_SITE_URL: https://www.alwint.dev
+
+      - name: No fabricated content in the build
+        # The site once shipped a set of invented awards because the content was
+        # fetched at build time from a stale service. Content is compiled in
+        # now, so this should be structurally impossible — assert it anyway.
+        run: |
+          if grep -rlF --include='*.js' --include='*.html' --include='*.rsc' \
+              -e 'Nexus AI Labs' -e 'Atlas RAG' -e 'TinyTune' -e 'NumFOCUS' \
+              -e "Dean's List" web/.next/server web/.next/static 2>/dev/null; then
+            echo "::error::placeholder content found in the build output"
+            exit 1
+          fi
+          echo "clean"

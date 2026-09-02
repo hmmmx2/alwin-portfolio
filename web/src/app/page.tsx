@@ -15,7 +15,7 @@ import { getContent } from "@/lib/api";
  * and the contact form.
  */
 export default async function HomePage() {
-  const content = await getContent();
+  const content = getContent();
 
   return (
     <>

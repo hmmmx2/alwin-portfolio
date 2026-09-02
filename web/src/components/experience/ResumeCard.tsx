@@ -62,10 +62,11 @@ export function ResumeCard({ resume }: { resume: ResumeMeta }) {
               <DownloadIcon className="size-[14px]" />
             </a>
             {/*
-              The API is a different origin, and a cross-origin `download`
-              attribute is ignored by every browser — the link above opens the
-              PDF rather than saving it. This gives the same thing a deliberate
-              affordance instead of leaving it as a surprise.
+              Kept alongside the download because a PDF is often something to
+              glance at rather than save. The `download` attribute above is
+              actually honoured now — it was silently ignored while the API
+              served this from a different port, since browsers refuse to
+              rename a cross-origin download.
             */}
             <a
               href={resumeUrl}
@@ -94,11 +95,10 @@ export function ResumeCard({ resume }: { resume: ResumeMeta }) {
             Chrome Android generally refuse to render a PDF in an iframe and
             leave a blank rectangle, which reads as a broken page. The buttons
             above are the mobile path, and the note below says so.
-
             Not sandboxed — `sandbox` disables Chrome's built-in PDF viewer.
-            The API sends `frame-ancestors` for this route specifically, since
-            its global `X-Frame-Options: SAMEORIGIN` would otherwise block this
-            silently.
+            No framing headers to work around any more: the PDF is a static
+            asset on this origin, so the site's own `frame-src 'self'` covers
+            it.
           */}
           <div className="relative mt-8 hidden aspect-[1/1.414] overflow-hidden rounded-card border border-[rgb(255_255_255/0.09)] bg-[rgb(255_255_255/0.02)] shadow-panel lg:block">
             <iframe

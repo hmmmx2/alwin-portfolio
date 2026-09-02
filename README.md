@@ -1,145 +1,133 @@
 # Alwin's Portfolio
 
-A production port of the single-file Claude Design document
-(`Alwin Portfolio.dc.html`) into a real application: **Next.js 16 + React 19**
-on the front end, **Express 5** on the back end, TypeScript throughout,
-Tailwind v4 for styling.
+Live at **[alwint.dev](https://www.alwint.dev)**.
 
-The visual design is preserved. The hero's ASCII wave animation was rebuilt on
+A production port of a single-file Claude Design document into a real
+application: **Next.js 16 + React 19**, TypeScript throughout, Tailwind v4.
+The visual design is preserved; the hero's ASCII wave animation was rebuilt on
 canvas and given pointer interaction.
 
 ```
 portfolio/
-  shared/   @portfolio/shared  types, zod schemas, canonical content
-  api/      @portfolio/api     Express 5 + libsql + Drizzle
-  web/      @portfolio/web     Next.js App Router
+  shared/     @portfolio/shared   types, zod schemas, the CV content itself
+  web/        @portfolio/web      Next.js App Router — the whole application
+  prototype/  the pre-port static build, kept for reference
+  scripts/    redact-resume.py — strips the referees from the published CV
 ```
+
+There used to be a separate Express service. It is gone: of its seven
+endpoints, four existed only because the front end was a different origin, and
+folding the remaining two into Route Handlers deleted CORS, a dual API-URL
+split, and a `frame-ancestors` override along with it. See
+[Architecture](#architecture) below.
 
 ## Running it
 
 ```bash
 pnpm install
+cp web/.env.example web/.env.local
 pnpm dev
 ```
 
-Web on <http://localhost:3100>, API on <http://localhost:4100>. Copy
-`api/.env.example` → `api/.env` and `web/.env.example` → `web/.env.local` if you
-need to change anything; every value has a working default.
+<http://localhost:3100>. Every value in `.env.example` has a working default,
+so the site runs with no configuration — only the contact form and the
+analytics beacon read any of it.
 
 | Command | What it does |
 | --- | --- |
-| `pnpm dev` | both servers, watched |
-| `pnpm build` | API bundle + Next production build |
-| `pnpm start` | both, from the built output |
-| `pnpm typecheck` | `tsc --noEmit` across all three packages |
-| `pnpm lint` | ESLint across all three packages |
-| `pnpm test` | API suite (Vitest + supertest) |
+| `pnpm dev` | Next dev server on 3100 |
+| `pnpm build` | production build |
+| `pnpm test` | contact + analytics handler tests |
+| `pnpm typecheck` / `pnpm lint` | across both packages |
+| `pnpm db:push` | apply the schema; run once per schema change |
 
-## Running it in Docker
+## Deploying
 
-```bash
-docker compose up --build
-```
+Vercel, from the repository root — `vercel.json` already points the build at the
+workspace, which is what lets `@portfolio/shared` resolve.
 
-Web on <http://localhost:3100>, API on <http://localhost:4100>. Copy
-`.env.docker.example` → `.env` to change ports, addresses or SMTP; an empty
-`.env` changes nothing.
+**Environment variables to set in Vercel:**
 
-Two images, both built from the workspace root because `@portfolio/shared` is a
-`workspace:*` link and pnpm needs the lockfile and sibling manifests to resolve
-it. `shared` is not a service — it is TypeScript source compiled into both.
-
-| | |
+| Variable | Notes |
 | --- | --- |
-| `api/Dockerfile` | tsup bundle on Node 22 Alpine, ~307MB |
-| `web/Dockerfile` | Next standalone output, ~316MB |
-| volume `api-data` | the SQLite file, so messages and analytics survive a rebuild |
-| `./api/assets` | bind-mounted read-only — drop in `resume.pdf` without rebuilding |
+| `TURSO_DATABASE_URL` | `libsql://…` from Turso |
+| `TURSO_AUTH_TOKEN` | from `turso db tokens create` |
+| `ANALYTICS_SALT` | **`openssl rand -hex 24`.** Production refuses to start on the example value |
+| `ALLOWED_COUNTRIES` | optional; defaults to the ten below |
+| `NEXT_PUBLIC_SITE_URL` | `https://www.alwint.dev` |
+| `MAIL_*` | optional; without them a message is stored and logged, not sent |
 
-Both run as the unprivileged `node` user, and `web` waits on the API's
-`/api/health` rather than merely on the process existing.
+Then `pnpm db:push` once against the Turso database.
 
-### Three things that will bite
+### Capacity
 
-**`NEXT_PUBLIC_API_URL` is a build arg, not an environment variable.** Next
-inlines it into the client bundle when the image is built, so setting it under
-`environment:` does nothing at all — the browser keeps whatever was compiled in.
-Changing an address means `docker compose up --build`.
+Every page is static and served from the CDN — the content is a TypeScript
+module compiled into the bundle, not something fetched at request time. Only
+`/api/contact` and `/api/analytics/pageview` invoke a function at all, so a
+thousand visitors is a few hundred kilobytes of edge traffic and essentially no
+compute.
 
-**The browser and the server need different addresses for the same API.**
-`localhost:4100` is right for a visitor's machine and wrong inside the web
-container, where `localhost` is the web container. So `lib/api.ts` reads two:
-`NEXT_PUBLIC_API_URL` for anything the browser issues (contact form, analytics
-beacon, resume link) and `API_INTERNAL_URL` — runtime, server-only, never in the
-client bundle — for server component fetches, which compose sets to
-`http://api:4100`. Get this wrong and nothing breaks loudly: `getContent()`
-falls back to the content bundled in `@portfolio/shared`, so the site renders
-perfectly while quietly ignoring the API. A warning in the web logs is the only
-symptom.
+### Country allowlist
 
-**`HOST` must be `0.0.0.0`.** The API defaults to `127.0.0.1`, which in a
-container accepts connections from nothing but itself. Compose sets it; the
-Dockerfile defaults it too.
+Requests from outside **US, MY, SG, GB, IE, FR, DE, JP, TW, CA** get a 403,
+implemented in `web/src/middleware.ts`.
 
-The API is unreachable while the web image builds, so the prerender falls back
-to bundled content and logs a warning. That is expected — every page carries
-`revalidate`, so the first request after startup refreshes from the live API.
+**Be clear about what this is.** An IP allowlist is a traffic filter, not a
+security control — one VPN click defeats it. What it definitely does is turn
+away real recruiters in Australia, India, the UAE, the Netherlands and
+Switzerland. It is a deliberate trade, and `ALLOWED_COUNTRIES` exists so a
+country can be added without a deploy.
 
-## How the three packages fit together
+Two carve-outs keep it from doing damage it was not meant to do:
 
-`shared` is the contract. Every shape that crosses the network is a zod schema
-there, and the types are `z.infer`red from those schemas so there is exactly one
-definition of each. The Express validator and the React contact form import the
-*same* `ContactInputSchema` — they cannot drift.
+- **Crawlers are admitted from anywhere**, matched on user-agent. A blocked
+  crawler means the site quietly leaves Google's index, and the OG unfurlers
+  are how a portfolio link actually gets opened in LinkedIn and Slack. That
+  match is spoofable, which is fine — forging a Googlebot header to read a
+  public CV achieves nothing a VPN would not.
+- **An absent country header means allow.** There is no `x-vercel-ip-country`
+  in `next dev`, and failing closed would make the site look broken on the
+  machine it is developed on.
 
-It also holds the site's content as typed data. The API serves it; the web app
-imports it as a **build-time fallback**, so `next build` succeeds and every page
-renders even when the API is unreachable. Only live API edits go missing.
+### Security
 
-> The content is still the design's placeholder copy. Every file under
-> `shared/src/content/` opens with a `PLACEHOLDER CONTENT` marker. "Nexus AI
-> Labs", "Vertex Analytics", the four papers and the four repos are invented;
-> only the email address is real.
+- **CSP with a per-request nonce**, built in the middleware because a static
+  header cannot carry one. Locked to `'self'` throughout — achievable only
+  because the design self-hosts its fonts and inlines its icons, with no CDN.
+  `style-src` keeps `'unsafe-inline'`, which Tailwind and `next/font` require.
+- **Static headers** in `next.config.ts`: HSTS with preload, `nosniff`,
+  `Referrer-Policy`, `X-Frame-Options: DENY`, and a `Permissions-Policy`
+  denying camera, microphone and geolocation.
+- **Rate limiting in the database**, not in memory. `express-rate-limit` counted
+  per process, which on serverless resets on every cold start — it would have
+  looked like it worked while enforcing nothing. Contact is 5/hour, analytics
+  60/hour, keyed on a salted daily visitor hash. `@upstash/ratelimit` is the
+  upgrade path if volume ever justifies a second service.
+- **No raw IP addresses are stored or logged**, anywhere. Rate limiting and
+  pageview de-duplication both key off a hash that rotates at midnight UTC.
+  Referrers are reduced to their host, because a full referring URL can carry a
+  token in its query string. `DNT` and `Sec-GPC` are honoured by writing
+  nothing.
+- **The published CV is redacted.** `scripts/redact-resume.py` removes the
+  referees' names, emails and phone numbers — from the text layer, the content
+  streams and the `mailto:` link annotations — and refuses to write a file that
+  still contains any of them.
 
-## The API
+## Architecture
 
-| Route | |
-| --- | --- |
-| `GET /api/health` | uptime, version, database reachability |
-| `GET /api/content` | the whole payload, cached |
-| `GET /api/content/:section` | `profile` · `stack` · `experience` · `research` · `projects` |
-| `POST /api/contact` | validated, spam-guarded, stored, then mailed |
-| `GET /api/resume` · `/api/resume/meta` | streams the PDF, reports availability |
-| `POST /api/analytics/pageview` | path + referrer host, no cookies |
+`shared` is the contract and the content. Every shape that crosses the wire is
+a zod schema there, and the CV itself lives in `shared/src/content/` as
+TypeScript rather than a CMS — it changes with a deploy and is identical for
+every visitor, so a database would add a query to every render without making
+anything easier to edit.
 
-Cross-cutting: helmet, a CORS allowlist, compression, three tiers of rate
-limiting, request-id correlation on every response and error body, structured
-pino logging, and a single error handler that renders `AppError`s as
-`{ error: { code, message, requestId, fields? } }`.
-
-**Contact messages are written to the database before the mailer runs.** If SMTP
-is down the visitor still gets a 201, the row records `delivered: false` and the
-error, and nothing is lost. With `MAIL_ENABLED=false` (the default) the send is
-simply logged.
-
-**No IP address is stored or logged anywhere.** Rate limiting and pageview
-attribution use `sha256(dailySalt + ip + userAgent)` truncated to 16 bytes, with
-the salt rotating at midnight UTC — enough to stop one client flooding the
-contact form, not enough to follow anyone across days. Referrers are reduced to
-their host, so query strings never land in the table. `DNT: 1` and Global
-Privacy Control skip the write entirely, and the client doesn't even make the
-request.
-
-**There is no resume PDF in this repo yet.** The Resume button is always in the
-navbar, as in the design. What changes is what sits behind it: once a file
-exists at `api/assets/resume.pdf` (or wherever `RESUME_PATH` points) the button
-gains a `download` attribute and the label "Download resume (PDF)"; until then
-it carries a `title` explaining the PDF hasn't been published and `/api/resume`
-answers with a clear 404 rather than a broken file. No code changes either way —
-drop the file in and it switches on within ~30s.
-
-Below the `sm` breakpoint the button collapses to just its download glyph: at
-375px the full pill eats most of the room the section links need.
+The web app imports that module directly. It used to fetch it over HTTP from
+the Express service and fall back to the bundled copy when that failed; the
+fallback was silent by design, which is exactly what made it dangerous — a
+build once shipped an entire set of placeholder awards because the service it
+fetched from was serving a stale image, and every check passed. Compiling the
+content in removes the failure mode rather than guarding against it, and CI
+greps the build output for the old placeholder strings regardless.
 
 ## The front end
 

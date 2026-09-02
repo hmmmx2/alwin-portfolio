@@ -19,7 +19,7 @@ export const metadata: Metadata = {
  * rises as you scroll. The other two routes are unaffected.
  */
 export default async function ProjectsPage() {
-  const { projects, stack } = await getContent();
+  const { projects, stack } = getContent();
 
   // Derived from the data rather than written down, so the line can't go stale
   // when a project is added or recategorised.

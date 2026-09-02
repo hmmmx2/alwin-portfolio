@@ -7,7 +7,8 @@ import { Analytics } from "@/components/Analytics";
 import { SiteFooter } from "@/components/footer/SiteFooter";
 import { SiteNav } from "@/components/nav/SiteNav";
 import { RevealObserver } from "@/components/ui/RevealObserver";
-import { getContent, getResumeMeta } from "@/lib/api";
+import { getContent } from "@/lib/api";
+import { getResumeMeta } from "@/server/resume";
 
 import "./globals.css";
 
@@ -69,7 +70,8 @@ export const viewport: Viewport = {
  * so the layout and a page asking for the same payload cost one request.
  */
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [content, resume] = await Promise.all([getContent(), getResumeMeta()]);
+  const content = getContent();
+  const resume = await getResumeMeta();
 
   return (
     <html

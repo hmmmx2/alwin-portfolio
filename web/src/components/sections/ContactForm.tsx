@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { ContactInputSchema } from "@portfolio/shared";
 
 import { CheckIcon, SpinnerIcon } from "@/components/ui/icons";
-import { API_BASE } from "@/lib/api";
 import { cn } from "@/lib/cn";
 
 type Status = "idle" | "submitting" | "sent" | "error";
@@ -79,7 +78,7 @@ export function ContactForm() {
     setStatus("submitting");
 
     try {
-      const res = await fetch(`${API_BASE}/api/contact`, {
+      const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(parsed.data),
