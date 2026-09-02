@@ -243,6 +243,28 @@ export const ContactInputSchema = z.object({
   elapsedMs: z.number().int().nonnegative().optional(),
 });
 
+/**
+ * What the API actually accepts, as opposed to what the form validates.
+ *
+ * The client checks the visitor's own fields against `ContactInputSchema` so it
+ * can highlight them as they type; it cannot use this one, because the
+ * Turnstile token does not exist until the widget resolves and the form would
+ * fail its own check first.
+ *
+ * The two differences from the field schema are both closed bypasses:
+ *
+ *  - `turnstileToken` is required, so a submission with no proof of a human is
+ *    rejected by validation before it reaches any handler logic.
+ *  - `elapsedMs` is required rather than optional. It used to be optional and
+ *    the timing floor was guarded by `typeof … === "number"`, so simply leaving
+ *    the field out skipped the check entirely. The form cannot submit before it
+ *    has hydrated, so a real client always has a number to send.
+ */
+export const ContactRequestSchema = ContactInputSchema.extend({
+  turnstileToken: z.string().min(1, "Please complete the verification."),
+  elapsedMs: z.number().int().nonnegative(),
+});
+
 export const ContactResponseSchema = z.object({
   ok: z.literal(true),
   id: z.string(),

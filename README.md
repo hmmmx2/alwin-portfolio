@@ -67,9 +67,55 @@ manifest it expects.
 | `TURSO_DATABASE_URL` | `libsql://…` from Turso |
 | `TURSO_AUTH_TOKEN` | from `turso db tokens create` |
 | `ANALYTICS_SALT` | **`openssl rand -hex 24`.** Production refuses to start on the example value |
-| `ALLOWED_COUNTRIES` | optional; defaults to the ten below |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | **Required.** Public key from the Turnstile widget |
+| `TURNSTILE_SECRET_KEY` | **Required.** Production refuses to start on Cloudflare's test secret |
+| `ALLOWED_COUNTRIES` | optional; defaults to the fourteen below |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.alwint.dev` |
 | `MAIL_*` | optional; without them a message is stored and logged, not sent |
+
+### Human verification on the contact form
+
+Cloudflare Turnstile, in managed mode -- invisible for most visitors, showing a
+challenge only when the signals are poor.
+
+It is here because every other control on the form is the *absence of a
+mistake*, and a script simply declines to make them: the honeypot is skipped by
+not filling a hidden field, the timing floor by sending a plausible number, the
+user-agent block by sending a browser's string, the country allowlist by one
+VPN click. A Turnstile token has to be obtained from Cloudflare, is single-use
+and expires in about five minutes, so it is also the endpoint's only replay
+protection.
+
+**Set the two keys before the next deploy.** Verification fails closed by
+design, and `env()` refuses to start on Cloudflare's test secret, so a
+production deploy without them answers every contact submission with a 500. The
+Gmail link beside the form is unaffected either way, which is what makes
+failing closed acceptable.
+
+1. Cloudflare dashboard -> **Turnstile** -> *Add widget*.
+2. Hostname `alwint.dev`, widget mode **Managed**.
+3. Copy the **site key** into `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and the
+   **secret key** into `TURNSTILE_SECRET_KEY`, in Vercel under Settings ->
+   Environment Variables, for both Production and Preview.
+4. Redeploy, then submit the form once.
+
+`.env.example` ships Cloudflare's public *test* keys so a fresh clone runs the
+real code path rather than a "skip verification when unset" branch. Measured
+against the live endpoint, that test secret returns success for a forged token
+as readily as a real one -- local development has the plumbing, not the
+protection.
+
+### Other abuse controls on the API routes
+
+- **Origin check.** Both routes refuse a POST whose `Origin` is not this site,
+  including a `curl` that sends none. Compared against the request's own origin
+  so preview deployments keep working.
+- **Rate limit keyed on the address**, not on `visitorHash`. The hash mixes the
+  user-agent in, which is right for counting distinct visitors and wrong for a
+  budget: rotating the user-agent used to hand a bot a fresh 5-per-hour every
+  request. Still no raw address stored anywhere.
+- **`elapsedMs` is required**, not optional. The timing floor was guarded by
+  `typeof … === "number"`, so leaving the field out skipped it entirely.
 
 **On the notification email showing as "me" in Gmail.** With `MAIL_FROM` and
 `MAIL_TO` set to the same mailbox, Gmail labels the row "me" no matter what the

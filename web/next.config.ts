@@ -78,14 +78,19 @@ const config: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline'",
+              // challenges.cloudflare.com is the only third party this site
+              // trusts, and it is here because Turnstile is the one bot
+              // control a script cannot simply decline to trigger. It needs a
+              // script and an iframe; the token is checked server-to-server
+              // from the Node runtime, so connect-src stays 'self'.
+              "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
               // Tailwind and next/font both inject inline styles.
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob:",
               "font-src 'self'",
               "connect-src 'self'",
               // 'self', not 'none': the experience page embeds /resume.pdf.
-              "frame-src 'self'",
+              "frame-src 'self' https://challenges.cloudflare.com",
               "frame-ancestors 'self'",
               "object-src 'none'",
               "base-uri 'none'",

@@ -30,6 +30,26 @@ export function visitorHash(headers: Headers): string {
     .slice(0, 32);
 }
 
+/**
+ * The key the rate limiter counts against.
+ *
+ * Deliberately *not* `visitorHash`: that mixes the user-agent in, which is
+ * correct for counting distinct visitors and wrong for a budget, because
+ * changing one character of the user-agent produced a brand new bucket and
+ * reset the limit. Nothing here is under the caller's control except the
+ * address.
+ *
+ * Same construction otherwise -- salted, truncated, rotated at midnight UTC,
+ * and no raw address stored anywhere.
+ */
+export function limiterKey(headers: Headers): string {
+  const day = new Date().toISOString().slice(0, 10);
+  return createHash("sha256")
+    .update(`${env().ANALYTICS_SALT}:limit:${day}:${clientAddress(headers)}`)
+    .digest("hex")
+    .slice(0, 32);
+}
+
 /** True when the client asked not to be measured. */
 export function optedOut(headers: Headers): boolean {
   return headers.get("dnt") === "1" || headers.get("sec-gpc") === "1";

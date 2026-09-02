@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { eq } from "drizzle-orm";
 import {
-  ContactInputSchema,
+  ContactRequestSchema,
   PageviewInputSchema,
   type ContactResponse,
   type PageviewResponse,
@@ -12,8 +12,9 @@ import type { Database } from "./db";
 import { contactMessages, pageviews } from "./db/schema";
 import { env } from "./env";
 import type { Mailer } from "./mailer";
-import { optedOut, referrerHost, visitorHash } from "./privacy";
+import { clientAddress, limiterKey, optedOut, referrerHost, visitorHash } from "./privacy";
 import { ANALYTICS, CONTACT, withinBudget } from "./rateLimit";
+import type { Verifier } from "./turnstile";
 
 /**
  * The handlers, separated from the Route Handler entry points so tests can call
@@ -23,6 +24,7 @@ import { ANALYTICS, CONTACT, withinBudget } from "./rateLimit";
 export interface Deps {
   db: Database;
   mailer: Mailer;
+  verifier: Verifier;
 }
 
 const json = (body: unknown, status: number) =>
@@ -43,10 +45,45 @@ function invalid(issues: { path: PropertyKey[]; message: string }[]) {
   );
 }
 
-export async function handleContact(request: Request, { db, mailer }: Deps): Promise<Response> {
-  const visitor = visitorHash(request.headers);
+/**
+ * Reject a POST that did not come from a page on this site.
+ *
+ * Browsers always send `Origin` on a cross-origin POST and on same-origin ones
+ * too, so this costs a real visitor nothing while turning away both a form
+ * posted from someone else's page and a bare `curl` that sends no origin at all.
+ *
+ * Compared against the request's own origin rather than a configured URL, so
+ * Vercel preview deployments -- which serve from a different hostname on every
+ * push -- keep working; NEXT_PUBLIC_SITE_URL is accepted as well for the case
+ * where a proxy rewrites the host.
+ */
+function sameOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
 
-  if (!(await withinBudget(db, CONTACT, visitor))) {
+  const allowed = new Set([new URL(request.url).origin]);
+  const configured = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configured) {
+    try {
+      allowed.add(new URL(configured).origin);
+    } catch {
+      // A malformed site URL should not take the contact form down.
+    }
+  }
+
+  return allowed.has(origin);
+}
+
+const forbidden = () =>
+  json({ error: "forbidden", message: "This request did not come from the site." }, 403);
+
+export async function handleContact(
+  request: Request,
+  { db, mailer, verifier }: Deps,
+): Promise<Response> {
+  if (!sameOrigin(request)) return forbidden();
+
+  if (!(await withinBudget(db, CONTACT, limiterKey(request.headers)))) {
     return json(
       { error: "rate_limited", message: "You've sent several messages already. Try again in an hour." },
       429,
@@ -60,7 +97,7 @@ export async function handleContact(request: Request, { db, mailer }: Deps): Pro
     return json({ error: "bad_request", message: "Expected a JSON body." }, 400);
   }
 
-  const parsed = ContactInputSchema.safeParse(payload);
+  const parsed = ContactRequestSchema.safeParse(payload);
   if (!parsed.success) return invalid(parsed.error.issues);
   const input = parsed.data;
 
@@ -71,10 +108,49 @@ export async function handleContact(request: Request, { db, mailer }: Deps): Pro
   }
 
   // A human cannot read the form and type 20+ characters in under a couple of
-  // seconds.
-  if (typeof input.elapsedMs === "number" && input.elapsedMs < env().CONTACT_MIN_FILL_MS) {
+  // seconds. `elapsedMs` is required by the schema, so this can no longer be
+  // skipped by leaving the field out.
+  if (input.elapsedMs < env().CONTACT_MIN_FILL_MS) {
     return json(
       { error: "unprocessable", message: "That was too quick — please try again." },
+      422,
+    );
+  }
+
+  /*
+   * Turnstile last among the checks, because it is the only one that costs a
+   * network round trip: a honeypot hit or a malformed body must never spend a
+   * siteverify call. The rate limiter stays first for the same reason.
+   *
+   * Fails closed, so the copy names the alternative -- the Gmail link beside
+   * the form depends on none of this.
+   */
+  // clientAddress falls back to the literal "unknown"; Cloudflare wants a real
+  // address or none at all.
+  const address = clientAddress(request.headers);
+
+  /*
+   * Belt and braces around a throw. `createVerifier` catches its own network
+   * errors, but `Verifier` is an interface and an exception escaping here would
+   * become a 500 -- which both loses the message and tells a bot the check is
+   * broken. Treat any failure to answer as a refusal.
+   */
+  let verified = false;
+  try {
+    verified = await verifier.verify(
+      input.turnstileToken,
+      address === "unknown" ? null : address,
+    );
+  } catch (error) {
+    console.error("[contact] verification threw", error);
+  }
+
+  if (!verified) {
+    return json(
+      {
+        error: "verification_failed",
+        message: "Couldn't verify that request. Please retry, or email me directly.",
+      },
       422,
     );
   }
@@ -129,8 +205,10 @@ export async function handlePageview(
     return json({ ok: true, recorded: false } satisfies PageviewResponse, 200);
   }
 
+  if (!sameOrigin(request)) return forbidden();
+
   const visitor = visitorHash(request.headers);
-  if (!(await withinBudget(db, ANALYTICS, visitor))) {
+  if (!(await withinBudget(db, ANALYTICS, limiterKey(request.headers)))) {
     return json({ error: "rate_limited", message: "Too many requests." }, 429);
   }
 

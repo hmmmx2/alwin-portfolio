@@ -5,6 +5,7 @@ import type {
   AwardSchema,
   CertificationSchema,
   ContactInputSchema,
+  ContactRequestSchema,
   ContactResponseSchema,
   ContentPayloadSchema,
   ContentSectionSchema,
@@ -39,6 +40,7 @@ export type ContentPayload = z.infer<typeof ContentPayloadSchema>;
 export type ContentSection = z.infer<typeof ContentSectionSchema>;
 
 export type ContactInput = z.infer<typeof ContactInputSchema>;
+export type ContactRequest = z.infer<typeof ContactRequestSchema>;
 export type ContactResponse = z.infer<typeof ContactResponseSchema>;
 
 export type ResumeMeta = z.infer<typeof ResumeMetaSchema>;

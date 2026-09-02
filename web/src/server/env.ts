@@ -13,6 +13,13 @@ import { z } from "zod";
 const DEV_SALT = "portfolio-dev-salt";
 
 /**
+ * Cloudflare's always-passing Turnstile test secret, also shipped in
+ * .env.example so development exercises the real verification path. Fatal in
+ * production for the same reason as DEV_SALT: it verifies nothing.
+ */
+const TEST_TURNSTILE_SECRET = "1x0000000000000000000000000000000AA";
+
+/**
  * An unset variable in a .env file is written `KEY=`, not omitted -- which is
  * exactly how `.env.example` ships every optional value here.
  *
@@ -48,6 +55,17 @@ const EnvSchema = z.object({
 
   /** Minimum time a human plausibly takes to fill in the contact form. */
   CONTACT_MIN_FILL_MS: z.coerce.number().int().nonnegative().default(2500),
+
+  /**
+   * Cloudflare Turnstile. The site key is public and reaches the browser via
+   * NEXT_PUBLIC_TURNSTILE_SITE_KEY; only the secret is read here.
+   *
+   * Defaulted to the test secret rather than left optional: an optional secret
+   * would mean a "skip verification when unset" branch, and the contact form
+   * would silently lose its only real bot defence the day someone forgot to set
+   * it. Production refuses to boot on the default instead.
+   */
+  TURNSTILE_SECRET_KEY: z.string().min(1).default(TEST_TURNSTILE_SECRET),
 
   MAIL_ENABLED: z
     .enum(["true", "false"])
@@ -90,6 +108,16 @@ export function env(): Env {
     throw new Error(
       "ANALYTICS_SALT is still the example value. Set a real secret before deploying — " +
         "every visitor hash is otherwise reproducible from this repository.",
+    );
+  }
+
+  if (
+    process.env.NODE_ENV === "production" &&
+    result.data.TURNSTILE_SECRET_KEY === TEST_TURNSTILE_SECRET
+  ) {
+    throw new Error(
+      "TURNSTILE_SECRET_KEY is still Cloudflare's test secret, which accepts any " +
+        "token. Create a Turnstile widget and set the real secret before deploying.",
     );
   }
 

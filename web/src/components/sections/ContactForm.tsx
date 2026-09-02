@@ -1,5 +1,6 @@
 "use client";
 
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useEffect, useRef, useState } from "react";
 
 import { ContactInputSchema } from "@portfolio/shared";
@@ -15,6 +16,13 @@ type FieldName = (typeof FIELDS)[number];
 const inputClass =
   "w-full rounded-xl border border-[rgb(255_255_255/0.09)] bg-[rgb(255_255_255/0.035)] px-4 py-[14px] text-[13.5px] text-ink outline-none transition-colors duration-200 placeholder:text-[rgb(244_245_246/0.28)] focus:border-[rgb(255_255_255/0.32)] focus:bg-[rgb(255_255_255/0.06)] aria-[invalid=true]:border-[rgb(248_113_113/0.55)]";
 
+/*
+ * Public by design -- the site key identifies the widget, the secret does the
+ * verifying. Read at module scope because Next inlines NEXT_PUBLIC_* at build
+ * time and a destructured `process.env` would not be replaced.
+ */
+const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+
 const labelClass =
   "mb-2 block font-mono text-[10px] uppercase tracking-[0.16em] text-ink-faint";
 
@@ -22,7 +30,9 @@ export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({});
   const [formError, setFormError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const widgetRef = useRef<TurnstileInstance>(null);
 
   // Stamped after mount rather than during render: reading the clock while
   // rendering makes the component non-idempotent, and the value is only needed
@@ -40,6 +50,16 @@ export function ContactForm() {
     return () => clearTimeout(timer);
   }, [status]);
 
+  /*
+   * A Turnstile token is single-use and is spent by the attempt that
+   * carried it. Without this, a visitor whose message was rejected for any
+   * reason would fail verification on every retry.
+   */
+  function resetVerification() {
+    setToken(null);
+    widgetRef.current?.reset();
+  }
+
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (status === "submitting") return;
@@ -51,9 +71,12 @@ export function ContactForm() {
       subject: String(data.get("subject") ?? ""),
       message: String(data.get("message") ?? ""),
       company: String(data.get("company") ?? ""),
-      // Omitted rather than sent as a bogus 0 if the mount effect somehow
-      // hasn't run — the server skips the timing check when it's absent.
-      elapsedMs: mountedAt.current ? Date.now() - mountedAt.current : undefined,
+      // Always a number. This was previously omitted when the mount effect
+      // hadn't run, and the server skipped its timing check on an absent
+      // value — which made "leave the field out" the entire bypass. A React
+      // submit handler cannot fire before the effect has run, so the
+      // fallback is a conservative 0 rather than nothing.
+      elapsedMs: mountedAt.current ? Date.now() - mountedAt.current : 0,
     };
 
     // Validated here with the *same* schema the API uses, so the visitor gets
@@ -81,36 +104,46 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: JSON.stringify({ ...parsed.data, turnstileToken: token }),
       });
 
       if (!res.ok) {
+        // The API answers with a flat { error, message, details }. This read
+        // body.error.message and body.error.fields, neither of which the
+        // server has ever sent, so every field error fell through to the
+        // generic string and none of them rendered.
         const body = (await res.json().catch(() => null)) as
-          | { error?: { message?: string; fields?: Record<string, string> } }
+          | { message?: string; details?: { path: string; message: string }[] }
           | null;
 
-        if (body?.error?.fields) {
+        if (body?.details) {
           const nextErrors: Partial<Record<FieldName, string>> = {};
-          for (const [key, message] of Object.entries(body.error.fields)) {
-            if (FIELDS.includes(key as FieldName)) nextErrors[key as FieldName] = message;
+          for (const { path, message } of body.details) {
+            if (FIELDS.includes(path as FieldName)) nextErrors[path as FieldName] ??= message;
           }
           setErrors(nextErrors);
         }
-        setFormError(body?.error?.message ?? "That didn't go through. Please try again.");
+        setFormError(body?.message ?? "That didn't go through. Please try again.");
         setStatus("error");
+        resetVerification();
         return;
       }
 
       formRef.current?.reset();
       mountedAt.current = Date.now();
+      resetVerification();
       setStatus("sent");
     } catch {
       setFormError("Couldn't reach the server. Please email me directly instead.");
       setStatus("error");
+      resetVerification();
     }
   }
 
   const busy = status === "submitting";
+  // Verification fails closed on the server, so submitting without a token
+  // could only ever produce a rejection.
+  const ready = Boolean(token) && !busy;
 
   return (
     <form
@@ -180,6 +213,25 @@ export function ContactForm() {
         />
       </Field>
 
+      {/*
+        Cloudflare Turnstile, in managed mode: invisible for most visitors and
+        only showing a challenge when the signals are poor. Making every
+        recruiter tick a box would cost more than it buys.
+
+        A token expires after about five minutes, which is well inside the
+        time someone may spend writing a message, so onExpire clears it and
+        the widget fetches another.
+      */}
+      <Turnstile
+        ref={widgetRef}
+        siteKey={siteKey}
+        onSuccess={setToken}
+        onExpire={() => setToken(null)}
+        onError={() => setToken(null)}
+        options={{ theme: "dark", size: "flexible", action: "contact" }}
+        className="mt-1"
+      />
+
       <div className="mt-1 flex flex-wrap items-center justify-between gap-4">
         <p
           role="status"
@@ -192,12 +244,14 @@ export function ContactForm() {
           {formError ??
             (status === "sent"
               ? "Thanks — I'll be in touch."
-              : "PGP available on request")}
+              : token
+                ? "PGP available on request"
+                : "Checking you're human…")}
         </p>
 
         <button
           type="submit"
-          disabled={busy}
+          disabled={!ready}
           className="inline-flex items-center gap-2 rounded-pill bg-ink px-[26px] py-[13px] font-mono text-[12.5px] font-semibold leading-none tracking-[0.04em] text-void transition-all duration-200 hover:-translate-y-px hover:shadow-[0_12px_30px_rgb(255_255_255/0.16)] disabled:cursor-progress disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
         >
           {busy ? (
