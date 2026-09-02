@@ -91,6 +91,13 @@ const config: NextConfig = {
             ].join("; "),
           },
           { key: "X-DNS-Prefetch-Control", value: "off" },
+          /*
+           * Nothing here is meant to be embedded by another site. The resume
+           * preview is same-origin, so same-origin is the correct value rather
+           * than cross-origin -- which is what the API had to send when it was
+           * on a different port.
+           */
+          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
         ],
       },
       {

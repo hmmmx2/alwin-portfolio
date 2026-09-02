@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * The country allowlist.
+ * The country allowlist, plus the bot and scanner filter.
  *
  * The CSP is deliberately *not* here. It was, carrying a per-request nonce,
  * until measuring the rendered HTML showed zero `nonce=` attributes: Next 16
@@ -20,7 +20,10 @@ import { NextResponse, type NextRequest } from "next/server";
  * a security control. One VPN click defeats it, and it blocks genuine
  * recruiters everywhere outside this list.
  */
-const DEFAULT_ALLOWED = ["US", "MY", "SG", "GB", "IE", "FR", "DE", "JP", "TW", "CA", "AU"];
+const DEFAULT_ALLOWED = [
+  "US", "MY", "SG", "GB", "IE", "FR", "DE", "JP",
+  "TW", "CA", "AU", "NL", "CH", "NZ",
+];
 
 const ALLOWED = new Set(
   (process.env.ALLOWED_COUNTRIES ?? DEFAULT_ALLOWED.join(","))
@@ -40,6 +43,38 @@ const ALLOWED = new Set(
  */
 const CRAWLERS =
   /(googlebot|google-inspectiontool|bingbot|duckduckbot|applebot|yandexbot|baiduspider|slurp|linkedinbot|twitterbot|slackbot|facebookexternalhit|discordbot|whatsapp|telegrambot)/i;
+
+/**
+ * Bots that are refused everywhere, regardless of country.
+ *
+ * Three groups, and the reason differs for each:
+ *
+ *   - **Vulnerability scanners.** These are probing for an admin panel or a
+ *     leaked `.env`. There is nothing here for them, but refusing early keeps
+ *     them out of the logs and off the function budget.
+ *   - **SEO and contact scrapers.** Ahrefs, Semrush, ZoomInfo and friends crawl
+ *     hard, obey nothing useful, and exist to resell what they find. A CV page
+ *     is exactly the sort of thing ZoomInfo sells.
+ *   - **AI training crawlers.** A judgement call rather than a security one:
+ *     the CV and the photograph are not offered for model training. robots.txt
+ *     asks; this enforces, since several of these ignore the file.
+ *
+ * Not here on purpose: Googlebot, Bingbot and the social unfurlers. Blocking
+ * those would deindex the site and break every LinkedIn preview, which is most
+ * of the point of having it.
+ */
+const BLOCKED_AGENTS =
+  /(sqlmap|nikto|nmap|masscan|zgrab|nuclei|wpscan|dirbuster|gobuster|acunetix|nessus|havij|arachni|censys|internetmeasurement|expanse|paloaltonetworks)|(ahrefsbot|semrushbot|mj12bot|dotbot|blexbot|seokicks|serpstatbot|dataforseobot|zoominfobot|megaindex|rogerbot|screaming ?frog)|(gptbot|oai-searchbot|chatgpt-user|ccbot|anthropic-ai|claude-web|cohere-ai|bytespider|petalbot|amazonbot|diffbot|omgili|imagesiftbot|timpibot|webzio)/i;
+
+/**
+ * Paths nothing on this site has ever served. Every request for one is a
+ * scanner sweeping for a WordPress install or a committed secret.
+ *
+ * Answered with 404 rather than 403: a 403 confirms something is there to be
+ * forbidden, and there is no reason to tell a scanner anything.
+ */
+const SCANNER_PATHS =
+  /^\/(wp-admin|wp-login|wp-content|wp-includes|xmlrpc\.php|phpmyadmin|administrator|\.env|\.git|\.aws|\.ssh|config\.(json|php|yml)|vendor\/|cgi-bin|autodiscover|owa\/|actuator|telescope|\.well-known\/traffic-advice)/i;
 
 /** Served regardless of country, or the block page renders unstyled. */
 function alwaysAllowed(pathname: string): boolean {
@@ -92,7 +127,30 @@ function blocked(country: string): NextResponse {
 }
 
 export function middleware(request: NextRequest): NextResponse {
-  if (alwaysAllowed(request.nextUrl.pathname)) return NextResponse.next();
+  const { pathname } = request.nextUrl;
+  const agent = request.headers.get("user-agent") ?? "";
+
+  // Scanners and hostile crawlers are refused before anything else, so they
+  // never reach the geo check or a route handler.
+  if (SCANNER_PATHS.test(pathname)) {
+    return new NextResponse(null, { status: 404, headers: { "cache-control": "no-store" } });
+  }
+
+  if (BLOCKED_AGENTS.test(agent)) {
+    return new NextResponse(null, { status: 403, headers: { "cache-control": "no-store" } });
+  }
+
+  /*
+   * An empty user-agent on a page request is not a browser. Restricted to
+   * document requests: `fetch` from the site's own client code sends
+   * `sec-fetch-mode: cors` and a real agent, and some corporate proxies strip
+   * the header on subresources.
+   */
+  if (!agent && request.headers.get("sec-fetch-dest") === "document") {
+    return new NextResponse(null, { status: 403, headers: { "cache-control": "no-store" } });
+  }
+
+  if (alwaysAllowed(pathname)) return NextResponse.next();
 
   /*
    * Vercel's geolocation header. `NextRequest.geo` was removed in Next 15.
@@ -102,7 +160,6 @@ export function middleware(request: NextRequest): NextResponse {
    * machine it is developed on.
    */
   const country = request.headers.get("x-vercel-ip-country");
-  const agent = request.headers.get("user-agent") ?? "";
 
   if (country && !ALLOWED.has(country) && !CRAWLERS.test(agent)) {
     return blocked(country);
