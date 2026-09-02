@@ -22,7 +22,7 @@ const RESUME_FILE = join(process.cwd(), "public", "resume.pdf");
  * ignore it across origins, which is why this was not worth doing while the
  * API served the file from another port.
  */
-export const RESUME_DOWNLOAD_NAME = "CV_ Alwin Tay Jing Xue.pdf";
+export const RESUME_DOWNLOAD_NAME = "Alwin_Resume.pdf";
 
 export async function getResumeMeta(): Promise<ResumeMeta> {
   try {

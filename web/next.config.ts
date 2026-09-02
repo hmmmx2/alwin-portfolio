@@ -121,7 +121,10 @@ const config: NextConfig = {
         headers: [
           {
             key: "Content-Disposition",
-            value: 'inline; filename="CV_ Alwin Tay Jing Xue.pdf"',
+            value: 'inline; filename="Alwin_Resume.pdf"',
+            // Kept in step with RESUME_DOWNLOAD_NAME in src/server/resume.ts.
+            // The header wins over the link's download attribute, so a mismatch
+            // would silently apply this one.
           },
         ],
       },
