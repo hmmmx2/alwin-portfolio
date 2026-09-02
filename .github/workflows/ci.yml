@@ -13,9 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # No `version:` input on purpose. action-setup v4 reads the version from
+      # package.json's `packageManager` field, and refuses to run when both are
+      # given -- "Multiple versions of pnpm specified" -- which failed this
+      # workflow before a single step of it had executed.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/setup-node@v4
         with:
