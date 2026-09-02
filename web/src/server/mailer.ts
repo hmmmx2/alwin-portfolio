@@ -1,5 +1,7 @@
 import nodemailer, { type Transporter } from "nodemailer";
 
+import { htmlBody, subjectLine, textBody } from "./mail-template";
+
 import { env } from "./env";
 
 /*
@@ -61,13 +63,28 @@ export function createMailer(): Mailer {
     enabled: true,
     async send(mail) {
       await transport.sendMail({
-        from: env().MAIL_FROM,
+        /*
+         * A display name, so the sender reads as the site rather than a bare
+         * address. It does not cure Gmail showing "me": when MAIL_FROM and
+         * MAIL_TO are the same mailbox, Gmail labels the row "me" whatever the
+         * display name says. That is why the visitor's name moved into the
+         * subject, and why sending from a domain address is the real fix.
+         */
+        from: { name: "alwint.dev", address: env().MAIL_FROM! },
         to: env().MAIL_TO,
         // The visitor's address goes in Reply-To, never in From: sending as
         // them would fail SPF/DMARC and land the whole thing in spam.
         replyTo: `${mail.name} <${mail.email}>`,
-        subject: `[portfolio] ${mail.subject}`,
-        text: `From: ${mail.name} <${mail.email}>\n\n${mail.message}`,
+        subject: subjectLine(mail),
+        // Both parts. Plain text is not a fallback nobody sees -- notification
+        // previews, screen readers and text-only clients read it.
+        text: textBody(mail),
+        html: htmlBody(mail),
+        headers: {
+          // A stable thing for Gmail to filter and label on, which is the
+          // practical answer to making it recognisable in a crowded inbox.
+          "X-Portfolio-Contact": "1",
+        },
       });
     },
   };

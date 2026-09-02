@@ -71,6 +71,18 @@ manifest it expects.
 | `NEXT_PUBLIC_SITE_URL` | `https://www.alwint.dev` |
 | `MAIL_*` | optional; without them a message is stored and logged, not sent |
 
+**On the notification email showing as "me" in Gmail.** With `MAIL_FROM` and
+`MAIL_TO` set to the same mailbox, Gmail labels the row "me" no matter what the
+From display name says -- it is a self-addressed message. Two mitigations are
+in place: the visitor's name is in the subject (`Portfolio · Name — Subject`),
+and every message carries an `X-Portfolio-Contact: 1` header to filter and
+label on.
+
+The actual fix is to send from the domain rather than the Gmail account, e.g.
+Resend with `contact@alwint.dev` verified by DNS. Then `MAIL_FROM` differs from
+`MAIL_TO`, the row shows the sender, and delivery no longer depends on a
+personal app password.
+
 **Set them once, in a file, not a shell.** Copy `web/.env.example` to
 `web/.env.local` and fill in the values. That single file does both jobs:
 
