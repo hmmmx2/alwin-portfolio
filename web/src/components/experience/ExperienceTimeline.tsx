@@ -51,6 +51,11 @@ export function ExperienceTimeline({
               <p className="m-0 mt-[6px] text-[13.5px] font-medium leading-[1.4] text-ink-muted">
                 {entry.organisation}
               </p>
+              {entry.location ? (
+                <p className="m-0 mt-[4px] font-mono text-[11px] leading-[1.4] tracking-[0.04em] text-ink-faint">
+                  {entry.location}
+                </p>
+              ) : null}
             </div>
 
             <p className="m-0 ml-auto text-right font-mono text-[11.5px] leading-[1.6] tracking-[0.06em] text-ink-faint">

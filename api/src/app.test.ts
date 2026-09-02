@@ -1,5 +1,9 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import request from "supertest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { ContentPayloadSchema } from "@portfolio/shared";
 
@@ -136,6 +140,37 @@ describe("resume", () => {
     });
 
     await request(harness.app).get("/api/resume").expect(404);
+  });
+
+  it("serves the PDF and reports its size once one is published", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "portfolio-resume-"));
+    const file = join(dir, "resume.pdf");
+    // Enough of a PDF to be a real file on disk; the route streams bytes and
+    // never parses them.
+    const bytes = Buffer.from("%PDF-1.4 portfolio test fixture %%EOF");
+    await writeFile(file, bytes);
+
+    try {
+      harness = await createHarness({ resumePath: file });
+
+      const meta = await request(harness.app).get("/api/resume/meta").expect(200);
+      expect(meta.body).toMatchObject({
+        available: true,
+        filename: "resume.pdf",
+        bytes: bytes.byteLength,
+      });
+
+      const res = await request(harness.app).get("/api/resume").expect(200);
+      expect(res.headers["content-type"]).toBe("application/pdf");
+      expect(res.headers["content-disposition"]).toContain("resume.pdf");
+
+      // The preview embeds this cross-origin, so the route has to drop the
+      // API-wide X-Frame-Options and allow the site to frame it instead.
+      expect(res.headers["x-frame-options"]).toBeUndefined();
+      expect(res.headers["content-security-policy"]).toContain("frame-ancestors");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
   });
 });
 

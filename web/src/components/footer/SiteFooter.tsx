@@ -37,12 +37,13 @@ export function SiteFooter({
           <ul className="m-0 flex list-none flex-col gap-[10px] p-0">
             {[
               ["/#about", "About"],
+              ["/#stack", "Tech stack"],
               ["/experience", "Experience"],
               ["/projects", "Projects"],
               ["/research", "Research"],
               ["/#education", "Education"],
+              ["/#certifications", "Certifications"],
               ["/#awards", "Achievements"],
-              ["/#stack", "Tech stack"],
               ["/#contact", "Contact"],
             ].map(([href, label]) => (
               <li key={href}>

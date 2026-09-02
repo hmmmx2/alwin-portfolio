@@ -35,7 +35,7 @@ export function ProjectsSection({
 
   return (
     <Reveal as="section" id="projects" className="scroll-mt-16 pb-2 pt-[104px]">
-      <SectionHeader index="05" label="PROJECTS" />
+      <SectionHeader index="04" label="PROJECTS" />
       <SectionTitle>Projects</SectionTitle>
 
       <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-[18px] p-0">

@@ -190,7 +190,7 @@ export function Hero({ profile }: { profile: Profile }) {
             style={{ marginTop: "clamp(6px, 1.6vh, 14px)" }}
           >
             <Link
-              href="/#projects"
+              href="/experience"
               className="rounded-pill bg-ink px-[22px] py-3 font-mono text-[12.5px] font-semibold leading-none tracking-[0.04em] text-void transition-all duration-200 hover:-translate-y-px hover:shadow-[0_12px_30px_rgb(255_255_255/0.14)]"
             >
               View work

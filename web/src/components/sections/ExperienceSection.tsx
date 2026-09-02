@@ -59,6 +59,11 @@ export function ExperienceSection({
               <p className="m-0 mt-[5px] text-[13px] font-medium leading-[1.4] text-ink-muted">
                 {entry.organisation}
               </p>
+              {entry.location ? (
+                <p className="m-0 mt-[3px] font-mono text-[11px] leading-[1.4] tracking-[0.04em] text-ink-faint">
+                  {entry.location}
+                </p>
+              ) : null}
               <p className="m-0 mt-3 max-w-[60ch] text-[13.5px] leading-[1.6] text-ink-muted">
                 {entry.summary}
               </p>

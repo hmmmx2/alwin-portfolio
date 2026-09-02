@@ -1,18 +1,23 @@
 import {
+  siAmazonwebservices,
+  siApachespark,
   siDocker,
   siFastapi,
   siGithub,
-  siHuggingface,
-  siJupyter,
-  siKubernetes,
+  siGithubactions,
   siLangchain,
   siLinkedin,
-  siNvidia,
+  siNextdotjs,
+  siNumpy,
+  siOllama,
+  siPandas,
   siPostgresql,
   siPython,
   siPytorch,
   siRedis,
-  siWeightsandbiases,
+  siScikitlearn,
+  siTensorflow,
+  siTypescript,
 } from "simple-icons";
 
 /**
@@ -30,16 +35,21 @@ import {
 const ICONS: Record<string, { path: string; title: string }> = {
   python: siPython,
   pytorch: siPytorch,
-  huggingface: siHuggingface,
+  tensorflow: siTensorflow,
+  scikitlearn: siScikitlearn,
   langchain: siLangchain,
-  nvidia: siNvidia,
-  docker: siDocker,
-  kubernetes: siKubernetes,
+  ollama: siOllama,
+  apachespark: siApachespark,
+  pandas: siPandas,
+  numpy: siNumpy,
   postgresql: siPostgresql,
   redis: siRedis,
   fastapi: siFastapi,
-  jupyter: siJupyter,
-  weightsandbiases: siWeightsandbiases,
+  docker: siDocker,
+  amazonwebservices: siAmazonwebservices,
+  githubactions: siGithubactions,
+  nextdotjs: siNextdotjs,
+  typescript: siTypescript,
   github: siGithub,
   linkedin: siLinkedin,
 };
@@ -53,6 +63,8 @@ export function BrandIcon({
   className?: string;
   color?: string;
 }) {
+  // Not every skill has a brand mark — QLoRA, Qdrant and vLLM have none — and
+  // the stack pill is designed to read as text alone when that happens.
   const icon = ICONS[name];
   if (!icon) return null;
 

@@ -15,7 +15,7 @@ export function AwardsSection({ awards }: { awards: Award[] }) {
 
   return (
     <Reveal as="section" id="awards" className="scroll-mt-16 pb-2 pt-[104px]">
-      <SectionHeader index="07" label="ACHIEVEMENTS & AWARDS" />
+      <SectionHeader index="08" label="ACHIEVEMENTS & AWARDS" />
       <SectionTitle>Achievements &amp; awards</SectionTitle>
 
       <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-[14px] p-0">
@@ -27,11 +27,14 @@ export function AwardsSection({ awards }: { awards: Award[] }) {
           >
             <Spotlight className="h-full rounded-card">
               <article className="flex h-full flex-col rounded-card border border-[rgb(255_255_255/0.075)] bg-gradient-to-br from-[rgb(34_36_41/0.66)] to-[rgb(14_15_17/0.52)] px-[22px] pb-[22px] pt-[20px] shadow-card backdrop-blur-[var(--glass-blur)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgb(255_255_255/0.2)]">
-                <p className="m-0 font-mono text-[9.5px] font-medium uppercase leading-none tracking-[0.22em] text-ink-ghost">
-                  {award.date}
-                </p>
+                {/* Undated awards drop the eyebrow rather than invent a year. */}
+                {award.date ? (
+                  <p className="m-0 font-mono text-[9.5px] font-medium uppercase leading-none tracking-[0.22em] text-ink-ghost">
+                    {award.date}
+                  </p>
+                ) : null}
 
-                <h3 className="m-0 mt-[14px] font-display text-[17px] font-semibold leading-[1.28] tracking-[-0.018em] text-ink">
+                <h3 className="m-0 mt-[14px] first:mt-0 font-display text-[17px] font-semibold leading-[1.28] tracking-[-0.018em] text-ink">
                   {award.title}
                 </h3>
 
@@ -43,6 +46,20 @@ export function AwardsSection({ awards }: { awards: Award[] }) {
                   <p className="m-0 mt-[14px] text-[13px] leading-[1.6] text-ink-muted">
                     {award.summary}
                   </p>
+                ) : null}
+
+                {/* Same treatment as a certification: a link only when the
+                    award is actually verifiable somewhere. */}
+                {award.url ? (
+                  <a
+                    href={award.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-auto inline-flex w-fit items-center gap-[6px] pt-[14px] font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted transition-colors hover:text-ink-bright"
+                  >
+                    View award
+                    <span aria-hidden="true">↗</span>
+                  </a>
                 ) : null}
               </article>
             </Spotlight>

@@ -32,7 +32,9 @@ const KIND_LABEL: Record<ResearchPaper["kind"], string> = {
   preprint: "Preprint",
 };
 
-function formatDate(iso: string): string {
+/** Null for an unpublished paper — the caller drops the badge entirely. */
+function formatDate(iso: string | null): string | null {
+  if (!iso) return null;
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
   return date.toLocaleDateString("en-GB", { year: "numeric", month: "long" });
@@ -138,7 +140,14 @@ export function PaperList({ papers }: { papers: ResearchPaper[] }) {
 
             <ul className="m-0 mt-5 flex list-none flex-wrap gap-[8px] p-0">
               <li className={badge}>{paper.venue}</li>
-              <li className={badge}>{formatDate(paper.publishedAt)}</li>
+              {/*
+                A paper in preparation has no date, and inventing one is the
+                difference between "not published yet" and a claim. The status
+                badge beside this already says which it is.
+              */}
+              {formatDate(paper.publishedAt) ? (
+                <li className={badge}>{formatDate(paper.publishedAt)}</li>
+              ) : null}
               <li className={badge}>
                 <span
                   aria-hidden="true"
@@ -149,7 +158,13 @@ export function PaperList({ papers }: { papers: ResearchPaper[] }) {
                       : "bg-[rgb(255_255_255/0.6)]",
                   )}
                 />
-                {KIND_LABEL[paper.kind]}
+                {/*
+                  "Preprint" would say it is posted somewhere. With no date and
+                  no URL it is not posted anywhere yet, so it says so.
+                */}
+                {paper.kind === "preprint" && !paper.publishedAt && !paper.url
+                  ? "In preparation"
+                  : KIND_LABEL[paper.kind]}
               </li>
             </ul>
 

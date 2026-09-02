@@ -37,7 +37,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.alwint.dev";
 const description = `${profile.role}. ${profile.availability}`;
 
 export const metadata: Metadata = {

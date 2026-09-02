@@ -12,21 +12,23 @@ export interface ResolvedResume {
   updatedAt: Date;
 }
 
-/** Absolute path the resume is read from, resolved against the API's cwd. */
+/** Default absolute path, resolved against the API's cwd. */
 export const resumePath = resolve(process.cwd(), env.RESUME_PATH);
 
 /**
- * There is no resume PDF committed to this repo. Rather than shipping a dead
- * button or a fabricated document, the API reports availability honestly and
- * the web app hides the download affordance when it is false.
+ * Availability is reported honestly rather than assumed: when no PDF is
+ * present the web app hides the download affordance and the preview frame
+ * instead of shipping a dead button or an empty viewer.
  */
-export async function resolveResume(): Promise<ResolvedResume | null> {
+export async function resolveResume(
+  path: string = resumePath,
+): Promise<ResolvedResume | null> {
   try {
-    const stats = await stat(resumePath);
+    const stats = await stat(path);
     if (!stats.isFile()) return null;
     return {
-      path: resumePath,
-      filename: basename(resumePath),
+      path,
+      filename: basename(path),
       bytes: stats.size,
       updatedAt: stats.mtime,
     };
@@ -35,8 +37,8 @@ export async function resolveResume(): Promise<ResolvedResume | null> {
   }
 }
 
-export async function resumeMeta(): Promise<ResumeMeta> {
-  const resume = await resolveResume();
+export async function resumeMeta(path?: string): Promise<ResumeMeta> {
+  const resume = await resolveResume(path);
   if (!resume) {
     return { available: false, filename: null, bytes: null, updatedAt: null };
   }

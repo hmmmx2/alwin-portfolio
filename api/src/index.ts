@@ -15,6 +15,7 @@ async function main(): Promise<void> {
     db,
     client,
     mailer: createMailer(),
+    resumePath,
     startedAt: Date.now(),
     version: process.env.npm_package_version ?? "1.0.0",
   };

@@ -1,14 +1,13 @@
-// PLACEHOLDER CONTENT — replace with real details before publishing.
-// Sample copy from the design document, including the "1.9k stars" claim.
+// From the CV's TECHNICAL PROJECTS section.
 //
-// TODO: `repoUrl` and `demoUrl` are all "#", so the Live demo / GitHub buttons
-// on /projects render but go nowhere. Put real URLs here, or set a field to
-// null to drop that button from the card.
+// TODO: `repoUrl` and `demoUrl` are null because the CV gives no URLs, so the
+// GitHub and Live demo buttons do not render at all. Put real links here and
+// they appear -- a null field drops its button rather than pointing nowhere.
 //
-// TODO: `images` is empty everywhere, so each showcase row falls back to a
-// single glass panel. Drop screenshots in web/public/projects/ and list them
-// here — three or more gives the full mosaic, and images[0] also becomes the
-// home page's teaser thumbnail.
+// TODO: `images` is empty, so each showcase row falls back to a single glass
+// panel. Drop screenshots in web/public/projects/ and list them here; three or
+// more gives the full mosaic, and images[0] becomes the home page thumbnail.
+// Screenshots are the single biggest thing missing from this page.
 //
 // `tech` holds names from stack.ts. Anything not found there still renders,
 // just without a brand icon.
@@ -16,75 +15,39 @@ import type { Project } from "../types";
 
 export const projects: Project[] = [
   {
-    id: "atlas-rag",
-    name: "Atlas RAG",
-    category: "OPEN SOURCE",
+    id: "voidcode-ai",
+    name: "VoidCode AI",
+    category: "ML PLATFORM",
     summary:
-      "A retrieval framework with pluggable rerankers and a built-in faithfulness eval suite. 1.9k stars.",
+      "An ML interview preparation platform: a PySpark feature pipeline over 2.3 million submissions feeding a LambdaMART ranker.",
     description:
-      "A retrieval framework built around the parts that usually get bolted on last: reranking, attribution and evaluation. Rerankers are pluggable, every answer carries the passages it was grounded in, and the faithfulness suite runs in CI so a regression shows up before a release does. Used in production by a handful of teams and at 1.9k stars.",
+      "A machine learning interview preparation platform built around measured recommendation quality rather than a hand-ordered syllabus. A PySpark pipeline turns 2.3 million code submissions into per-learner mastery vectors, a LambdaMART ranker learns over those features, and the problem catalogue is validated in CI so every reference solution is known to run.",
     highlights: [
-      "Pluggable reranker interface — swap cross-encoders, LLM rerankers or your own without touching the retrieval path",
-      "Built-in faithfulness evaluation that gates releases on unsupported-claim rate rather than passage similarity",
-      "Answer attribution surfaced through the API, so every response can be traced to its sources",
+      "PySpark feature pipeline processing 2.3 million code-submission rows at roughly 9,200 rows per second on 10 cores, into per-learner mastery vectors for 117,000 learners",
+      "LambdaMART ranker over those features reaching Recall@100 of 0.616 against a 0.190 popularity baseline, and NDCG@10 of 0.214",
+      "A 200-item catalogue with 125 executable problems and 699 test cases, every reference solution executing green in continuous integration",
     ],
-    repoUrl: "#",
-    demoUrl: "#",
+    repoUrl: null,
+    demoUrl: null,
     images: [],
-    tech: ["Python", "PyTorch", "LangChain", "FastAPI"],
+    tech: ["Python", "PySpark", "PostgreSQL", "Next.js", "TypeScript"],
   },
   {
-    id: "tinytune",
-    name: "TinyTune",
-    category: "RESEARCH TOOL",
+    id: "synthien-ai",
+    name: "SYNTHIEN AI",
+    category: "AI INFRASTRUCTURE",
     summary:
-      "QLoRA fine-tuning on a single consumer GPU, with reproducible run manifests and cost reporting.",
+      "A multi-tenant document intelligence platform with agentic retrieval, per-claim citations and fail-closed row-level security.",
     description:
-      "QLoRA fine-tuning that fits on one consumer GPU, aimed at people who need a reproducible run rather than a leaderboard score. Every run writes a manifest — data hash, seed, hyperparameters, package versions — so a result can be re-created months later, and reports what it cost in GPU-hours while it goes.",
+      "A multi-tenant document intelligence platform where the retrieval is agentic and the tenancy boundary is enforced at the data layer rather than in application code. Hybrid search and reranking produce per-claim citations; row-level security fails closed; and PII is redacted before anything leaves for a model, with an append-only audit log behind it.",
     highlights: [
-      "Fits a 7B fine-tune into 24GB of VRAM with 4-bit quantisation and gradient checkpointing",
-      "Run manifests capture data hash, seed and environment, so any result can be reproduced exactly",
-      "Live cost reporting in GPU-hours, with a projected total before the run commits",
+      "Agentic retrieval backend across 197 source files and 79 migrations with 9 registered capabilities — hybrid search and reranking with per-claim citations, on FastAPI with PostgreSQL, Qdrant and Redis",
+      "Fail-closed row-level security across 56 policies at the data layer, verified by an 85-test adversarial suite covering cross-tenant reads, filter injection, prompt injection and redaction before model egress",
+      "PII redaction before every outbound model call and an append-only audit log spanning 88 action types, with CI running lint, type-check, contract-drift and a dedicated tenancy job on Linux service containers",
     ],
-    repoUrl: "#",
-    demoUrl: "#",
+    repoUrl: null,
+    demoUrl: null,
     images: [],
-    tech: ["Python", "PyTorch", "CUDA", "Weights & Biases"],
-  },
-  {
-    id: "ledger-eval",
-    name: "Ledger Eval",
-    category: "INFRASTRUCTURE",
-    summary:
-      "Continuous evaluation service that gates model releases on regression suites and traced failures.",
-    description:
-      "A continuous evaluation service that sits between a model and its release. Suites run on every candidate, results are stored against the commit that produced them, and a release is blocked when a regression crosses its threshold. Failures are kept with their full trace, so the question is which case broke rather than whether the score moved.",
-    highlights: [
-      "Release gating on regression thresholds per suite, not a single aggregate score",
-      "Every failure retained with its full trace — inputs, retrieved context and model output",
-      "Results keyed to the commit that produced them, so a regression points at a change",
-    ],
-    repoUrl: "#",
-    demoUrl: "#",
-    images: [],
-    tech: ["Python", "FastAPI", "PostgreSQL", "Docker", "Kubernetes"],
-  },
-  {
-    id: "halftone",
-    name: "Halftone",
-    category: "EXPERIMENT",
-    summary:
-      "An ASCII renderer that turns depth maps into density-matched character fields, in real time.",
-    description:
-      "An ASCII renderer that treats characters as a density ramp rather than a font. Depth maps are matched to glyphs by ink coverage, so the resulting field reads as shading instead of noise, and it runs fast enough to drive from a live camera. Built mostly to find out whether it could hold a stable image while the subject moves.",
-    highlights: [
-      "Glyphs matched to depth by measured ink coverage rather than a hand-ordered ramp",
-      "Runs in real time on a live camera feed at 60fps",
-      "Temporal smoothing keeps the field stable as the subject moves, instead of flickering per frame",
-    ],
-    repoUrl: "#",
-    demoUrl: "#",
-    images: [],
-    tech: ["Python", "CUDA", "Jupyter"],
+    tech: ["Python", "FastAPI", "PostgreSQL", "Qdrant", "Redis", "Docker"],
   },
 ];

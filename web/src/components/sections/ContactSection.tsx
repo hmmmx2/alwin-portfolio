@@ -8,8 +8,7 @@ import { SectionHeader } from "./SectionHeader";
 export function ContactSection({ profile }: { profile: Profile }) {
   return (
     <Reveal as="section" id="contact" className="scroll-mt-16 pb-24 pt-[104px]">
-      {/* 06 and 07 are Education and Achievements, added above. */}
-      <SectionHeader index="08" label="CONTACT" />
+      <SectionHeader index="09" label="CONTACT" />
 
       <div className="flex flex-wrap items-start gap-x-14 gap-y-10">
         <div className="flex-[1_1_260px]">
@@ -19,7 +18,7 @@ export function ContactSection({ profile }: { profile: Profile }) {
           <p className="m-0 mt-4 max-w-[34ch] text-sm leading-[1.7] text-ink-muted">
             {profile.availability}
           </p>
-          {/* Email only — the site deliberately publishes no city or timezone. */}
+          {/* Email and phone. No home address — the site publishes no city. */}
           <address className="mt-[26px] font-mono text-[12.5px] not-italic leading-[1.9] text-ink-muted">
             <a
               href={`mailto:${profile.email}`}
@@ -27,6 +26,17 @@ export function ContactSection({ profile }: { profile: Profile }) {
             >
               {profile.email}
             </a>
+            {profile.phone ? (
+              <>
+                <br />
+                <a
+                  href={`tel:${profile.phone.replace(/\s+/g, "")}`}
+                  className="transition-colors hover:text-ink-bright"
+                >
+                  {profile.phone}
+                </a>
+              </>
+            ) : null}
           </address>
         </div>
 

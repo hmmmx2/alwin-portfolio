@@ -3,6 +3,7 @@ import type { z } from "zod";
 import type {
   ApiErrorSchema,
   AwardSchema,
+  CertificationSchema,
   ContactInputSchema,
   ContactResponseSchema,
   ContentPayloadSchema,
@@ -31,6 +32,7 @@ export type StackItem = z.infer<typeof StackItemSchema>;
 export type ExperienceEntry = z.infer<typeof ExperienceEntrySchema>;
 export type EducationEntry = z.infer<typeof EducationEntrySchema>;
 export type Award = z.infer<typeof AwardSchema>;
+export type Certification = z.infer<typeof CertificationSchema>;
 export type ResearchPaper = z.infer<typeof ResearchPaperSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
 export type ContentPayload = z.infer<typeof ContentPayloadSchema>;

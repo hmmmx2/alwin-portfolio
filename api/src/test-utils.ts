@@ -1,3 +1,6 @@
+import { tmpdir } from "node:os";
+import { resolve } from "node:path";
+
 import type { Express } from "express";
 
 import { buildApp } from "./app";
@@ -18,7 +21,7 @@ export interface TestHarness {
  * Each test gets its own, so nothing leaks between cases.
  */
 export async function createHarness(
-  options: { mailer?: Partial<Mailer> } = {},
+  options: { mailer?: Partial<Mailer>; resumePath?: string } = {},
 ): Promise<TestHarness> {
   const { db, client } = createDatabase(":memory:");
   await migrate(client);
@@ -37,6 +40,10 @@ export async function createHarness(
     db,
     client,
     mailer,
+    // A path that cannot exist unless a test puts something there, so the
+    // "no resume published" case is a property of the test rather than of
+    // whatever the repository happens to contain today.
+    resumePath: options.resumePath ?? resolve(tmpdir(), "portfolio-test-no-resume.pdf"),
     startedAt: Date.now(),
     version: "test",
   };

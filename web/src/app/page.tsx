@@ -1,5 +1,6 @@
 import { Hero } from "@/components/hero/Hero";
 import { AwardsSection } from "@/components/sections/AwardsSection";
+import { CertificationsSection } from "@/components/sections/CertificationsSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { EducationSection } from "@/components/sections/EducationSection";
 import { ExperienceSection } from "@/components/sections/ExperienceSection";
@@ -30,10 +31,11 @@ export default async function HomePage() {
           now. Keeps `id="experience"` so the footer anchor still lands here.
         */}
         <ExperienceSection entries={content.experience} limit={2} moreHref="/experience" />
-        <ResearchSection papers={content.research} limit={2} moreHref="/research" />
         {/* Teaser as well — the full grid, with tech tags and CTAs, is /projects. */}
         <ProjectsSection projects={content.projects} limit={2} moreHref="/projects" />
+        <ResearchSection papers={content.research} limit={2} moreHref="/research" />
         <EducationSection entries={content.education} />
+        <CertificationsSection items={content.certifications} />
         <AwardsSection awards={content.awards} />
         <ContactSection profile={content.profile} />
       </main>

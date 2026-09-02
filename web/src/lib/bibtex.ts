@@ -35,7 +35,10 @@ function citationKey(paper: ResearchPaper, year: string): string {
 }
 
 export function toBibtex(paper: ResearchPaper): string {
-  const year = paper.publishedAt.slice(0, 4);
+  // Empty for an unpublished paper. The fields below are filtered on length, so
+  // an absent year drops out of the entry rather than emitting `year = {}` —
+  // and the citation key falls back to the id alone.
+  const year = paper.publishedAt?.slice(0, 4) ?? "";
   const type = ENTRY_TYPE[paper.kind];
 
   const fields: Array<[string, string]> = [

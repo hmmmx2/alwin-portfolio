@@ -1,6 +1,7 @@
 import type { ContentPayload } from "../types";
 
 import { awards } from "./awards";
+import { certifications } from "./certifications";
 import { education } from "./education";
 import { experience } from "./experience";
 import { profile } from "./profile";
@@ -8,7 +9,16 @@ import { projects } from "./projects";
 import { research } from "./research";
 import { stack } from "./stack";
 
-export { awards, education, experience, profile, projects, research, stack };
+export {
+  awards,
+  certifications,
+  education,
+  experience,
+  profile,
+  projects,
+  research,
+  stack,
+};
 
 /**
  * The canonical content payload.
@@ -24,5 +34,6 @@ export const content: ContentPayload = {
   research,
   projects,
   education,
+  certifications,
   awards,
 };

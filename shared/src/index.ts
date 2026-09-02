@@ -2,6 +2,7 @@ export * from "./schemas";
 export type * from "./types";
 export {
   awards,
+  certifications,
   content,
   education,
   experience,

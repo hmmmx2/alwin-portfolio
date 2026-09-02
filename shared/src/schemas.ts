@@ -32,7 +32,10 @@ export const ProfileSchema = z.object({
   eyebrow: z.string().min(1),
   role: z.string().min(1),
   email: z.string().email(),
-  // No `location` field, by request: the site publishes no city or timezone.
+  /** Shown beside the email in the contact block. Null hides the line. */
+  phone: z.string().min(1).nullable().default(null),
+  // No `location` field: the site publishes no home address. Employers get a
+  // city per role instead, on `ExperienceEntrySchema.location`.
   /** Short paragraph shown beside the contact form. */
   availability: z.string().min(1),
   /**
@@ -63,6 +66,8 @@ export const ExperienceEntrySchema = z.object({
   period: z.string().min(1),
   /** e.g. "FULL-TIME" */
   kind: z.string().min(1),
+  /** Where the role was, e.g. "Sarawak, Malaysia". Empty renders nothing. */
+  location: z.string().default(""),
   current: z.boolean().default(false),
   /**
    * Achievement bullets. Rendered only on the dedicated /experience page — the
@@ -96,9 +101,15 @@ export const AwardSchema = z.object({
   title: z.string().min(1),
   /** Who gave it — university, conference, organiser. */
   issuer: z.string().min(1),
-  /** Free-form rather than a date: awards are often just a year. */
-  date: z.string().min(1),
+  /**
+   * Free-form rather than a date, because awards are often just a year — and
+   * nullable, because they are sometimes not dated at all. The card drops its
+   * eyebrow rather than inventing one.
+   */
+  date: z.string().min(1).nullable().default(null),
   summary: z.string().default(""),
+  /** Certificate or announcement. Null renders the card as plain text. */
+  url: z.string().min(1).nullable().default(null),
 });
 
 export const ResearchPaperSchema = z.object({
@@ -110,8 +121,12 @@ export const ResearchPaperSchema = z.object({
    * badge on the research page.
    */
   venue: z.string().min(1),
-  /** ISO date. Formatted for display at render, never shown raw. */
-  publishedAt: z.string().min(1),
+  /**
+   * ISO date, formatted for display at render and never shown raw. Null for a
+   * paper that has not been published — the row shows its status instead, so an
+   * unpublished manuscript cannot end up wearing a date it never had.
+   */
+  publishedAt: z.string().min(1).nullable().default(null),
   /** Ordered as they appear on the paper. Drives the BibTeX `author` field. */
   authors: z.array(z.string().min(1)).default([]),
   /**
@@ -129,7 +144,20 @@ export const ResearchPaperSchema = z.object({
    */
   arxivId: z.string().min(1).nullable().default(null),
   abstract: z.string().min(1),
-  url: z.string().min(1),
+  /** Where to read it. Null while there is nowhere to send anyone yet. */
+  url: z.string().min(1).nullable().default(null),
+});
+
+export const CertificationSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  /** Awarding body — DeepLearning.AI, DataCamp, General Assembly. */
+  issuer: z.string().min(1),
+  /**
+   * Credential page. Null renders the card as plain text rather than a dead
+   * link: a certification nobody can verify is worth less than an honest one.
+   */
+  url: z.string().min(1).nullable().default(null),
 });
 
 export const ProjectSchema = z.object({
@@ -170,6 +198,7 @@ export const ContentPayloadSchema = z.object({
   research: z.array(ResearchPaperSchema),
   projects: z.array(ProjectSchema),
   education: z.array(EducationEntrySchema).default([]),
+  certifications: z.array(CertificationSchema).default([]),
   awards: z.array(AwardSchema).default([]),
 });
 
@@ -180,6 +209,7 @@ export const CONTENT_SECTIONS = [
   "research",
   "projects",
   "education",
+  "certifications",
   "awards",
 ] as const;
 

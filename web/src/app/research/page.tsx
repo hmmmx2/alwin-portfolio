@@ -20,9 +20,12 @@ export default async function ResearchPage() {
 
   // Derived rather than written down, so the line can't go stale when a paper
   // is added.
+  // `filter` before `map`, not after: an unpublished paper has no date at all,
+  // and slicing null throws rather than producing something to filter out.
   const years = research
-    .map((paper) => paper.publishedAt.slice(0, 4))
-    .filter(Boolean)
+    .map((paper) => paper.publishedAt)
+    .filter((date): date is string => Boolean(date))
+    .map((date) => date.slice(0, 4))
     .sort();
   const span =
     years.length > 0 && years[0] !== years[years.length - 1]
