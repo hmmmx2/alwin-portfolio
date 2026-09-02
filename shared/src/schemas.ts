@@ -32,10 +32,9 @@ export const ProfileSchema = z.object({
   eyebrow: z.string().min(1),
   role: z.string().min(1),
   email: z.string().email(),
-  /** Shown beside the email in the contact block. Null hides the line. */
-  phone: z.string().min(1).nullable().default(null),
-  // No `location` field: the site publishes no home address. Employers get a
-  // city per role instead, on `ExperienceEntrySchema.location`.
+  // No `phone` and no `location` field. The CV dropped both from its header,
+  // and a number on a public page is scraped within days; employers get a city
+  // per role on `ExperienceEntrySchema.location`, and email reaches a person.
   /** Short paragraph shown beside the contact form. */
   availability: z.string().min(1),
   /**

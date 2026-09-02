@@ -18,7 +18,11 @@ export function ContactSection({ profile }: { profile: Profile }) {
           <p className="m-0 mt-4 max-w-[34ch] text-sm leading-[1.7] text-ink-muted">
             {profile.availability}
           </p>
-          {/* Email and phone. No home address — the site publishes no city. */}
+          {/*
+            Email only. No phone number and no city: the CV publishes neither,
+            and a number on a public page is scraped within days. The form
+            beside this is the other way to reach me.
+          */}
           <address className="mt-[26px] font-mono text-[12.5px] not-italic leading-[1.9] text-ink-muted">
             <a
               href={`mailto:${profile.email}`}
@@ -26,17 +30,6 @@ export function ContactSection({ profile }: { profile: Profile }) {
             >
               {profile.email}
             </a>
-            {profile.phone ? (
-              <>
-                <br />
-                <a
-                  href={`tel:${profile.phone.replace(/\s+/g, "")}`}
-                  className="transition-colors hover:text-ink-bright"
-                >
-                  {profile.phone}
-                </a>
-              </>
-            ) : null}
           </address>
         </div>
 

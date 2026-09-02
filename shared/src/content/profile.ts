@@ -1,8 +1,8 @@
 // From the CV (V3). Everything here is real; nothing is placeholder.
 //
-// No home address by request, and no phone number for anyone but the owner --
-// see `references` in the README for why the CV's referee contacts are not on
-// the site at all.
+// No phone number and no home address: the CV dropped both from its header,
+// and a number on a public page is scraped within days. Email, LinkedIn and
+// GitHub are the contact paths.
 import type { Profile } from "../types";
 
 export const profile: Profile = {
@@ -11,7 +11,6 @@ export const profile: Profile = {
   eyebrow: "PORTFOLIO · 2026",
   role: "Machine Learning Engineer (LLM)",
   email: "alwin.tayjx.work@gmail.com",
-  phone: "+60 16 983 7035",
   availability:
     "Graduating July 2026 and looking for machine learning engineering work — LLM fine-tuning, retrieval systems, and the infrastructure around them. Replies within two days.",
   // Transparent WebP in web/public, built by web/scripts/build-portrait.py --
