@@ -92,8 +92,20 @@ for page in doc:
     )
     redacted_pages += 1
 
+# No heading is not automatically an error: a CV that never had a REFERENCES
+# section, or one where they have already been removed at the source, is
+# exactly what we want. What must never pass is a CV that still carries the
+# details under a heading this script did not recognise -- so when nothing was
+# redacted, the source itself has to be clean.
 if redacted_pages == 0:
-    raise SystemExit(f'no "{HEADING}" heading found -- refusing to write an unredacted copy')
+    source_text = chr(10).join(page.get_text("text") for page in doc)
+    still_there = [needle for needle in MUST_NOT_SURVIVE if needle in source_text]
+    if still_there:
+        raise SystemExit(
+            f'no "{HEADING}" heading found, but {still_there} are in the document -- '
+            "refusing to write an unredacted copy"
+        )
+    print(f'no "{HEADING}" section; source is already clean')
 
 # Google Docs leaves the source filename in the title.
 doc.set_metadata({"title": "CV - Alwin Tay Jing Xue", "author": "Alwin Tay Jing Xue"})
