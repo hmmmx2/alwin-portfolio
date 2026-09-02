@@ -12,13 +12,32 @@ import { z } from "zod";
 /** The value shipped in .env.example. Fine locally, fatal in production. */
 const DEV_SALT = "portfolio-dev-salt";
 
+/**
+ * An unset variable in a .env file is written `KEY=`, not omitted -- which is
+ * exactly how `.env.example` ships every optional value here.
+ *
+ * `z.string().min(1).optional()` rejects that: an empty string is present, so
+ * `.optional()` never applies and `.min(1)` fails. The result was a 500 on
+ * every API request with "String must contain at least 1 character(s)", from a
+ * file the project itself hands you. Empty means absent.
+ */
+const optionalText = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  z.string().min(1).optional(),
+);
+
+const optionalPort = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  z.coerce.number().int().min(1).max(65535).optional(),
+);
+
 const EnvSchema = z.object({
   /**
    * libsql. A Turso URL in production (`libsql://…`), or `file:./data/local.db`
    * when running against a local file.
    */
   TURSO_DATABASE_URL: z.string().min(1).default("file:./data/portfolio.db"),
-  TURSO_AUTH_TOKEN: z.string().min(1).optional(),
+  TURSO_AUTH_TOKEN: optionalText,
 
   /**
    * Mixed into every visitor hash and rotated daily. Left at the default, every
@@ -34,16 +53,16 @@ const EnvSchema = z.object({
     .enum(["true", "false"])
     .default("false")
     .transform((value) => value === "true"),
-  MAIL_HOST: z.string().optional(),
-  MAIL_PORT: z.coerce.number().int().min(1).max(65535).optional(),
+  MAIL_HOST: optionalText,
+  MAIL_PORT: optionalPort,
   MAIL_SECURE: z
     .enum(["true", "false"])
     .default("false")
     .transform((value) => value === "true"),
-  MAIL_USER: z.string().optional(),
-  MAIL_PASSWORD: z.string().optional(),
-  MAIL_FROM: z.string().optional(),
-  MAIL_TO: z.string().optional(),
+  MAIL_USER: optionalText,
+  MAIL_PASSWORD: optionalText,
+  MAIL_FROM: optionalText,
+  MAIL_TO: optionalText,
 });
 
 export type Env = z.infer<typeof EnvSchema>;
