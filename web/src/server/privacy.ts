@@ -14,6 +14,25 @@ import { env } from "./env";
  * headers rather than `req.ip`.
  */
 export function clientAddress(headers: Headers): string {
+  /*
+   * Order matters, and it matters most once the domain is proxied through
+   * Cloudflare.
+   *
+   * `cf-connecting-ip` is Cloudflare's authoritative client address and it
+   * comes first because behind the proxy `x-forwarded-for` can resolve to a
+   * Cloudflare edge address instead of the visitor. That is not a cosmetic
+   * difference: this value keys the rate limiter, so a collapsed address would
+   * put every visitor on the planet in one bucket and refuse the sixth contact
+   * message sent from anywhere. It would look like the limiter working.
+   *
+   * Both Cloudflare headers are stripped and re-set by Cloudflare on every
+   * request, so a client cannot forge them while the proxy is in front. Off
+   * Cloudflare they are simply absent and this falls through to the Vercel
+   * behaviour it had before.
+   */
+  const cloudflare = headers.get("cf-connecting-ip") ?? headers.get("true-client-ip");
+  if (cloudflare) return cloudflare.trim();
+
   // Vercel sets both; the first entry of x-forwarded-for is the real client.
   const forwarded = headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0]!.trim();

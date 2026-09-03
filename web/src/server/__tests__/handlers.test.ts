@@ -217,6 +217,48 @@ describe("contact", () => {
     expect(refused.status).toBe(429);
   });
 
+  it("keys the limit on the Cloudflare client address, not the proxy's", async () => {
+    /*
+     * The regression this guards: once alwint.dev is proxied through
+     * Cloudflare, x-forwarded-for can carry a Cloudflare edge address. If that
+     * were the limiter key, every visitor on earth would share one bucket and
+     * the sixth message sent from anywhere would be refused.
+     *
+     * Same edge address on every request, five different real visitors behind
+     * it -- all five must get through.
+     */
+    const EDGE = "172.71.0.1";
+
+    /*
+     * Six, not five. The budget is five per hour, so five requests sharing one
+     * bucket would all still be accepted and the test would pass against the
+     * very bug it exists to catch. The sixth distinct visitor is the only
+     * request that tells the two behaviours apart.
+     */
+    for (let i = 0; i < 6; i += 1) {
+      const res = await handleContact(
+        post(validContact, {
+          "cf-connecting-ip": `198.51.100.${i}`,
+          "x-forwarded-for": EDGE,
+        }),
+        deps,
+      );
+      expect(res.status).toBe(201);
+    }
+
+    // One of those visitors sending repeatedly is still cut off, so the
+    // limiter has not simply been switched off for everyone.
+    let last = 201;
+    for (let i = 0; i < 6; i += 1) {
+      const res = await handleContact(
+        post(validContact, { "cf-connecting-ip": "198.51.100.0", "x-forwarded-for": EDGE }),
+        deps,
+      );
+      last = res.status;
+    }
+    expect(last).toBe(429);
+  });
+
   it("refuses a sixth message within the hour", async () => {
     for (let i = 0; i < 5; i += 1) {
       const ok = await handleContact(post(validContact), deps);
@@ -251,6 +293,29 @@ describe("pageview", () => {
     expect(rows[0]?.visitorHash).not.toContain("203.0.113.9");
     // Host only: a full referrer can carry a token in its query string.
     expect(rows[0]?.referrerHost).toBe("news.example.com");
+  });
+
+  it("tells two visitors behind one Cloudflare edge apart", async () => {
+    const pv = (cfIp: string) =>
+      new Request(`${ORIGIN}/api/analytics/pageview`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: ORIGIN,
+          "cf-connecting-ip": cfIp,
+          "x-forwarded-for": "172.71.0.1",
+        },
+        body: JSON.stringify({ path: "/" }),
+      });
+
+    await handlePageview(pv("198.51.100.1"), { db });
+    await handlePageview(pv("198.51.100.2"), { db });
+
+    const rows = await db.select().from(pageviews);
+    expect(rows).toHaveLength(2);
+    // Two people, two hashes -- not one shared edge identity.
+    expect(new Set(rows.map((r) => r.visitorHash)).size).toBe(2);
+    for (const row of rows) expect(row.visitorHash).not.toContain("198.51.100");
   });
 
   it("writes nothing when the client sends DNT", async () => {

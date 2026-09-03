@@ -130,6 +130,27 @@ function blocked(country: string): NextResponse {
   });
 }
 
+/**
+ * The visitor's country, from whichever edge is actually in front.
+ *
+ * Cloudflare first: once the domain is proxied, Vercel sees a Cloudflare
+ * address and `x-vercel-ip-country` reports where that edge sits rather than
+ * where the visitor is -- which would quietly turn the allowlist into a filter
+ * on Cloudflare's datacentres. `cf-ipcountry` is set by Cloudflare from the
+ * real client address and is stripped from inbound requests, so it cannot be
+ * forged through the proxy.
+ *
+ * `XX` means Cloudflare could not determine a country. Treated as absent, on
+ * the same reasoning as a missing header: unknown is allowed rather than
+ * refused. `T1` (Tor) is left to fall through to the allowlist, which does not
+ * contain it, so Tor exits are blocked.
+ */
+function visitorCountry(request: NextRequest): string | null {
+  const cf = request.headers.get("cf-ipcountry");
+  if (cf && cf !== "XX") return cf.toUpperCase();
+  return request.headers.get("x-vercel-ip-country");
+}
+
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
   const agent = request.headers.get("user-agent") ?? "";
@@ -163,7 +184,7 @@ export function proxy(request: NextRequest): NextResponse {
    * container, and failing closed would make the site look broken on the
    * machine it is developed on.
    */
-  const country = request.headers.get("x-vercel-ip-country");
+  const country = visitorCountry(request);
 
   if (country && !ALLOWED.has(country) && !CRAWLERS.test(agent)) {
     return blocked(country);
