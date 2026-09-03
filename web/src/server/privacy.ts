@@ -45,7 +45,17 @@ export function clientAddress(headers: Headers): string {
    * deliberate action, and that action is the same one that makes it safe.
    */
   if (trustCloudflare()) {
-    const cloudflare = headers.get("cf-connecting-ip") ?? headers.get("true-client-ip");
+    /*
+     * `cf-connecting-ip` only. There was a `true-client-ip` fallback here and
+     * it was removed after measuring what Cloudflare actually does with each:
+     * it rejects a request that spoofs cf-connecting-ip at the edge with its
+     * own error 1000, and passes a spoofed true-client-ip straight through to
+     * us. Cloudflare always sets cf-connecting-ip, so the fallback could never
+     * fire for a real request and existed only as a header an attacker could
+     * set. An unreachable branch that is also the dangerous one is worth
+     * deleting rather than defending.
+     */
+    const cloudflare = headers.get("cf-connecting-ip");
     if (cloudflare) return cloudflare.trim();
   }
 
