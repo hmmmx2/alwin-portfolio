@@ -3,6 +3,17 @@ import { createHash } from "node:crypto";
 import { env } from "./env";
 
 /**
+ * Whether Cloudflare's proxy is actually in front of this deployment.
+ *
+ * Read from the raw environment rather than the parsed `env()` so `proxy.ts`,
+ * which runs on the edge and cannot import the zod schema, can apply exactly
+ * the same rule.
+ */
+export function trustCloudflare(): boolean {
+  return process.env.TRUST_CLOUDFLARE_PROXY === "true";
+}
+
+/**
  * Raw IP addresses are never stored or logged.
  *
  * Rate limiting and pageview de-duplication both need a stable-per-day visitor
@@ -25,13 +36,18 @@ export function clientAddress(headers: Headers): string {
    * put every visitor on the planet in one bucket and refuse the sixth contact
    * message sent from anywhere. It would look like the limiter working.
    *
-   * Both Cloudflare headers are stripped and re-set by Cloudflare on every
-   * request, so a client cannot forge them while the proxy is in front. Off
-   * Cloudflare they are simply absent and this falls through to the Vercel
-   * behaviour it had before.
+   * Cloudflare strips and re-sets these headers on every request, so they
+   * cannot be forged *while the proxy is in front*. They are worthless before
+   * it is, which is why they are read only when TRUST_CLOUDFLARE_PROXY says so
+   * -- an earlier version of this trusted them unconditionally and shipped a
+   * rate-limit bypass: rotating a made-up cf-connecting-ip minted a fresh
+   * budget on every request. Defaulting off means the dangerous state needs a
+   * deliberate action, and that action is the same one that makes it safe.
    */
-  const cloudflare = headers.get("cf-connecting-ip") ?? headers.get("true-client-ip");
-  if (cloudflare) return cloudflare.trim();
+  if (trustCloudflare()) {
+    const cloudflare = headers.get("cf-connecting-ip") ?? headers.get("true-client-ip");
+    if (cloudflare) return cloudflare.trim();
+  }
 
   // Vercel sets both; the first entry of x-forwarded-for is the real client.
   const forwarded = headers.get("x-forwarded-for");

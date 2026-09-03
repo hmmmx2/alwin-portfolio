@@ -69,6 +69,7 @@ manifest it expects.
 | `ANALYTICS_SALT` | **`openssl rand -hex 24`.** Production refuses to start on the example value |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | **Required.** Public key from the Turnstile widget |
 | `TURNSTILE_SECRET_KEY` | **Required.** Production refuses to start on Cloudflare's test secret |
+| `TRUST_CLOUDFLARE_PROXY` | `true` **only** while the domain is proxied through Cloudflare; see below |
 | `ALLOWED_COUNTRIES` | optional; defaults to the fourteen below |
 | `NEXT_PUBLIC_SITE_URL` | `https://www.alwint.dev` |
 | `MAIL_*` | optional; without them a message is stored and logged, not sent |

@@ -69,7 +69,12 @@ beforeEach(async () => {
   deps = { db, mailer, verifier };
 });
 
-afterEach(() => close());
+afterEach(() => {
+  // The flag is process-wide; leaking it would silently change how every later
+  // test derives an address.
+  delete process.env.TRUST_CLOUDFLARE_PROXY;
+  close();
+});
 
 describe("contact", () => {
   it("stores the message and reports delivery", async () => {
@@ -217,7 +222,32 @@ describe("contact", () => {
     expect(refused.status).toBe(429);
   });
 
+  it("ignores a forged cf-connecting-ip when the proxy is not enabled", async () => {
+    /*
+     * The bypass this guards, which shipped once: cf-connecting-ip is only
+     * trustworthy behind Cloudflare, because Cloudflare overwrites it. Read
+     * unconditionally, it is just a string the caller chose -- so rotating it
+     * minted a fresh rate-limit budget on every request and the limiter became
+     * decorative.
+     *
+     * Flag off (the default): a rotating forged header must NOT buy extra
+     * requests.
+     */
+    delete process.env.TRUST_CLOUDFLARE_PROXY;
+
+    let last = 201;
+    for (let i = 0; i < 6; i += 1) {
+      const res = await handleContact(
+        post(validContact, { "cf-connecting-ip": `203.0.113.${i}`, "x-forwarded-for": "198.51.100.1" }),
+        deps,
+      );
+      last = res.status;
+    }
+    expect(last).toBe(429);
+  });
+
   it("keys the limit on the Cloudflare client address, not the proxy's", async () => {
+    process.env.TRUST_CLOUDFLARE_PROXY = "true";
     /*
      * The regression this guards: once alwint.dev is proxied through
      * Cloudflare, x-forwarded-for can carry a Cloudflare edge address. If that
@@ -296,6 +326,7 @@ describe("pageview", () => {
   });
 
   it("tells two visitors behind one Cloudflare edge apart", async () => {
+    process.env.TRUST_CLOUDFLARE_PROXY = "true";
     const pv = (cfIp: string) =>
       new Request(`${ORIGIN}/api/analytics/pageview`, {
         method: "POST",

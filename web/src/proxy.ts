@@ -133,7 +133,7 @@ function blocked(country: string): NextResponse {
 /**
  * The visitor's country, from whichever edge is actually in front.
  *
- * Cloudflare first: once the domain is proxied, Vercel sees a Cloudflare
+ * Cloudflare first *when the proxy is enabled*: once the domain is proxied, Vercel sees a Cloudflare
  * address and `x-vercel-ip-country` reports where that edge sits rather than
  * where the visitor is -- which would quietly turn the allowlist into a filter
  * on Cloudflare's datacentres. `cf-ipcountry` is set by Cloudflare from the
@@ -146,8 +146,14 @@ function blocked(country: string): NextResponse {
  * contain it, so Tor exits are blocked.
  */
 function visitorCountry(request: NextRequest): string | null {
-  const cf = request.headers.get("cf-ipcountry");
-  if (cf && cf !== "XX") return cf.toUpperCase();
+  // Only once Cloudflare is genuinely in front. Unproxied, this header is
+  // whatever the caller typed, and trusting it let a client pick its own
+  // country -- and, through the same mistake in clientAddress, mint a fresh
+  // rate-limit budget per request.
+  if (process.env.TRUST_CLOUDFLARE_PROXY === "true") {
+    const cf = request.headers.get("cf-ipcountry");
+    if (cf && cf !== "XX") return cf.toUpperCase();
+  }
   return request.headers.get("x-vercel-ip-country");
 }
 
