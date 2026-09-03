@@ -59,9 +59,17 @@ export const projects: Project[] = [
   {
     id: "voidcode-ai",
     name: "VoidCode AI",
-    // No recording of this one yet. Explicit rather than defaulted, matching
-    // how `images: []` is written out on every project.
-    video: null,
+    // A 45s silent capture: a convolution-shape problem, the tutor localising
+    // an off-by-one in the floor division on line 5, and the suite going 1/6
+    // to 6/6. Source was already H.264, unlike SYNTHIEN's, so this is a
+    // straight 1920x1200 -> 1440x900 requantise.
+    video: {
+      src: "/voidcode-demo.0ed8f7c6.mp4",
+      poster: "/voidcode-demo-poster.259054d2.jpg",
+      caption: "Screen recording · the tutor localises a failing case and the suite goes 1/6 to 6/6",
+      width: 1440,
+      height: 900,
+    },
     category: "ML INTERVIEW-PREP TUTOR",
     summary:
       "An LLM interview-prep tutor with a Judge0 execution sandbox, QLoRA fine-tuning, a LambdaMART recommender over an IRT mastery model, and a reproducible streaming evaluation harness.",

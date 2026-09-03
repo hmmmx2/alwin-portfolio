@@ -140,8 +140,12 @@ const config: NextConfig = {
       },
       {
         /*
-         * The demo recording and its poster, on the same content-hashed
-         * convention as the portrait above.
+         * Every demo recording and poster, on the same content-hashed
+         * convention as the portrait above. One rule rather than a pair per
+         * project, but deliberately not a blanket `*.mp4`: the hash is matched
+         * explicitly as eight hex digits, so an unhashed file dropped into
+         * /public cannot inherit a year of immutable caching and become
+         * impossible to replace.
          *
          * The hash is what makes `immutable` safe: Next serves /public with
          * `max-age=0`, so a 6.7 MB video that loops on two pages would be
@@ -149,11 +153,11 @@ const config: NextConfig = {
          * because a re-encode changes the filename -- overwriting in place
          * ships nothing, which is exactly how the portrait went stale once.
          */
-        source: "/synthien-demo.:hash.mp4",
+        source: "/:slug(.+-demo).:hash([0-9a-f]{8}).mp4",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {
-        source: "/synthien-demo-poster.:hash.jpg",
+        source: "/:slug(.+-demo-poster).:hash([0-9a-f]{8}).jpg",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
     ];
