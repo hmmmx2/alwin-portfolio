@@ -131,6 +131,26 @@ const config: NextConfig = {
             // The header wins over the link's download attribute, so a mismatch
             // would silently apply this one.
           },
+          {
+            /*
+             * Without this the file inherits Vercel's `max-age=0`, and behind
+             * Cloudflare that measured as `cf-cache-status: REVALIDATED` --
+             * every single request for the resume reaching the origin. It was
+             * the only asset on the site doing so.
+             *
+             * An hour, not a year, and no `immutable`: the filename is not
+             * content-hashed, unlike the portrait and the demo recordings, so
+             * a long cache would pin an outdated CV to a URL that cannot
+             * change. An hour absorbs a flood at Cloudflare's edge while
+             * keeping a replacement live within the hour.
+             *
+             * This is deliberately a cache header rather than a rate limit: it
+             * prevents the load instead of refusing it, and a real recruiter
+             * downloading the CV twice is not abuse.
+             */
+            key: "Cache-Control",
+            value: "public, max-age=3600",
+          },
         ],
       },
       {
