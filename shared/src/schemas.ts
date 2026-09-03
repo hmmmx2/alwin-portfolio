@@ -182,6 +182,30 @@ export const ProjectSchema = z.object({
    */
   images: z.array(z.string().min(1)).default([]),
   /**
+   * A silent screen recording of the project running, under /public.
+   *
+   * Separate from `images` because it is a different kind of claim: a
+   * screenshot shows what something looks like, a recording shows that it
+   * works. Null on every project that has none, and the render sites fall back
+   * to the image mosaic rather than leaving a gap.
+   *
+   * `width`/`height` are the encoded dimensions. They are here so the frame can
+   * reserve the right box before a single byte of video arrives -- without
+   * them the row reflows when playback starts.
+   */
+  video: z
+    .object({
+      src: z.string().min(1),
+      /** Shown before playback, and the only thing a visitor who never scrolls to it downloads. */
+      poster: z.string().min(1),
+      /** Says what the recording actually shows. */
+      caption: z.string().default(""),
+      width: z.number().int().positive(),
+      height: z.number().int().positive(),
+    })
+    .nullable()
+    .default(null),
+  /**
    * Stack item names, resolved against `content.stack` at render — same
    * arrangement as `ExperienceEntrySchema.tech`, so icon slugs and brand
    * colours stay defined in exactly one place. Shown on /projects only; the

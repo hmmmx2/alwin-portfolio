@@ -4,6 +4,7 @@ import type { Project } from "@portfolio/shared";
 
 import { BrandIcon } from "@/components/ui/BrandIcon";
 import { MediaSlot } from "@/components/ui/MediaSlot";
+import { ProjectVideo } from "@/components/ui/ProjectVideo";
 import { Reveal } from "@/components/ui/Reveal";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { ArrowRightIcon, ExternalIcon } from "@/components/ui/icons";
@@ -47,14 +48,29 @@ export function ProjectsSection({
           >
             <Spotlight className="h-full rounded-card">
               <article className="flex h-full flex-col overflow-hidden rounded-card border border-[rgb(255_255_255/0.075)] bg-gradient-to-br from-[rgb(34_36_41/0.66)] to-[rgb(14_15_17/0.52)] shadow-card backdrop-blur-[var(--glass-blur)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgb(255_255_255/0.2)]">
-                <MediaSlot
-                  // First screenshot doubles as the card thumbnail, so a card
-                  // image and the showcase mosaic can't drift apart.
-                  src={project.images[0] ?? null}
-                  alt={project.images[0] ? `${project.name} screenshot` : ""}
-                  label="Project thumbnail"
-                  className="aspect-video w-full border-b border-[rgb(255_255_255/0.07)]"
-                />
+                {project.video ? (
+                  /*
+                    The teaser plays: a card that shows the product working is a
+                    stronger reason to open /projects than a still of it.
+                    Cropped to the card's 16/9 here -- the uncropped, captioned
+                    version is on the showcase row.
+                  */
+                  <ProjectVideo
+                    src={project.video.src}
+                    poster={project.video.poster}
+                    label={`Screen recording of ${project.name} running`}
+                    className="aspect-video w-full border-b border-[rgb(255_255_255/0.07)]"
+                  />
+                ) : (
+                  <MediaSlot
+                    // First screenshot doubles as the card thumbnail, so a card
+                    // image and the showcase mosaic can't drift apart.
+                    src={project.images[0] ?? null}
+                    alt={project.images[0] ? `${project.name} screenshot` : ""}
+                    label="Project thumbnail"
+                    className="aspect-video w-full border-b border-[rgb(255_255_255/0.07)]"
+                  />
+                )}
 
                 <div className="flex flex-1 flex-col px-6 pb-5 pt-[22px]">
                   <p className="m-0 font-mono text-[9.5px] font-medium uppercase leading-none tracking-[0.22em] text-ink-ghost">

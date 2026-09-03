@@ -138,6 +138,24 @@ const config: NextConfig = {
         source: "/alwin.:hash.webp",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
+      {
+        /*
+         * The demo recording and its poster, on the same content-hashed
+         * convention as the portrait above.
+         *
+         * The hash is what makes `immutable` safe: Next serves /public with
+         * `max-age=0`, so a 6.7 MB video that loops on two pages would be
+         * revalidated on every visit. Caching it for a year is only correct
+         * because a re-encode changes the filename -- overwriting in place
+         * ships nothing, which is exactly how the portrait went stale once.
+         */
+        source: "/synthien-demo.:hash.mp4",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
+        source: "/synthien-demo-poster.:hash.jpg",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
     ];
   },
   images: {

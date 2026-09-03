@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Project, StackItem } from "@portfolio/shared";
 
 import { BrandIcon } from "@/components/ui/BrandIcon";
+import { ProjectVideo } from "@/components/ui/ProjectVideo";
 import { ExternalIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
@@ -34,6 +35,32 @@ const frame =
  */
 function ProjectMedia({ project }: { project: Project }) {
   const [first, second, third] = project.images;
+
+  /*
+   * A recording outranks the screenshots: it is the only thing on the page that
+   * shows the project running rather than describing it.
+   *
+   * Held at the video's own aspect ratio instead of the row's 16/11, and
+   * `contain` rather than `cover` -- the frame is dense product UI, and
+   * cropping it to fit a grid would throw away the evidence.
+   */
+  if (project.video) {
+    const { src, poster, caption, width, height } = project.video;
+    return (
+      <ProjectVideo
+        src={src}
+        poster={poster}
+        label={`Screen recording of ${project.name} running`}
+        caption={caption || undefined}
+        fit="contain"
+        className={cn(frame, "shadow-panel")}
+        // Inline, not a Tailwind class: the ratio comes from the data, so a
+        // differently-shaped recording on another project still reserves the
+        // right box.
+        style={{ aspectRatio: `${width} / ${height}` }}
+      />
+    );
+  }
 
   if (!first) {
     return (

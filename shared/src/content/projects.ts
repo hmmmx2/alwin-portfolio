@@ -28,6 +28,17 @@ export const projects: Project[] = [
   {
     id: "synthien-ai",
     name: "SYNTHIEN AI",
+    // A 48s silent capture of the platform running: five papers ingested, the
+    // agent planning across them, and an answer returned with a numbered
+    // source list. Transcoded from a 57 MB MPEG-4 Part 2 original, which no
+    // browser can decode, to 2.6 MB of H.264.
+    video: {
+      src: "/synthien-demo.c4deac98.mp4",
+      poster: "/synthien-demo-poster.f685d35e.jpg",
+      caption: "Screen recording · agentic retrieval over a five-paper corpus, answered with per-claim citations",
+      width: 1440,
+      height: 900,
+    },
     category: "AGENTIC RAG PLATFORM",
     summary:
       "Multi-tenant, citation-grounded question answering over private document corpora, on a tool-driven LLM agent with hybrid retrieval and row-level security.",
@@ -48,6 +59,9 @@ export const projects: Project[] = [
   {
     id: "voidcode-ai",
     name: "VoidCode AI",
+    // No recording of this one yet. Explicit rather than defaulted, matching
+    // how `images: []` is written out on every project.
+    video: null,
     category: "ML INTERVIEW-PREP TUTOR",
     summary:
       "An LLM interview-prep tutor with a Judge0 execution sandbox, QLoRA fine-tuning, a LambdaMART recommender over an IRT mastery model, and a reproducible streaming evaluation harness.",
