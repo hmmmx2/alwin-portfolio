@@ -177,6 +177,10 @@ const config: NextConfig = {
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {
+        source: "/:slug(award-.+).:hash([0-9a-f]{8}).jpg",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
         source: "/:slug(.+-demo-poster).:hash([0-9a-f]{8}).jpg",
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },

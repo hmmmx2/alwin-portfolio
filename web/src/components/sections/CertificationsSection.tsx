@@ -18,7 +18,7 @@ export function CertificationsSection({ items }: { items: Certification[] }) {
 
   return (
     <Reveal as="section" id="certifications" className="scroll-mt-16 pb-2 pt-[104px]">
-      <SectionHeader index="07" label="CERTIFICATIONS" />
+      <SectionHeader index="08" label="CERTIFICATIONS" />
       <SectionTitle>Certifications</SectionTitle>
 
       <ul className="m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-[14px] p-0">

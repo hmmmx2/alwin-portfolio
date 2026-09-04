@@ -109,6 +109,17 @@ export const AwardSchema = z.object({
   summary: z.string().default(""),
   /** Certificate or announcement. Null renders the card as plain text. */
   url: z.string().min(1).nullable().default(null),
+  /**
+   * Photographs of the award under /public: the certificate, the presentation,
+   * the prize itself. An award with images is laid out as a wide row, because
+   * a card grid has nowhere to put them.
+   *
+   * Order matters and is not decorative. The renderer stacks the first two in
+   * a left column and gives the third its own full-height column, so the two
+   * landscape-ish frames sit together and the portrait one is not squashed
+   * between them.
+   */
+  images: z.array(z.string().min(1)).default([]),
 });
 
 export const ResearchPaperSchema = z.object({

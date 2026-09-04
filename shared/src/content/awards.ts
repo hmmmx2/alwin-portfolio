@@ -3,8 +3,9 @@
 // TODO: `date` is null on both because the CV gives no year, and the card drops
 // its eyebrow rather than inventing one. Add the years when you have them.
 //
-// The URLs come from the CV's own hyperlink annotations -- its "[link]" markers
-// are real links, not placeholder text.
+// The certificate and photographs now stand in for the CV's "[link]" markers:
+// the evidence is on the page rather than behind a Google Drive URL that a
+// reader has to trust and click.
 import type { Award } from "../types";
 
 export const awards: Award[] = [
@@ -14,7 +15,12 @@ export const awards: Award[] = [
     issuer: "TechFrontier Explorer × SCENT · National",
     date: null,
     summary: "",
-    url: "https://drive.google.com/file/d/19L6wgy53ebmPfXD8k7Jp9RlaUoxoEc_j/view?usp=sharing",
+    url: null,
+    images: [
+      "/award-scent-stage.efb940f0.jpg",
+      "/award-scent-prize.1170adb6.jpg",
+      "/award-scent-certificate.e647a5b6.jpg",
+    ],
   },
   {
     id: "techfrontier-scent-grant",
@@ -22,6 +28,7 @@ export const awards: Award[] = [
     issuer: "TechFrontier Explorer × SCENT · National",
     date: null,
     summary: "",
-    url: "https://drive.google.com/file/d/1_jMbjr1bF-VwdVe3ZyPem3IcrgcIyQpd/view?usp=sharing",
+    url: null,
+    images: [],
   },
 ];

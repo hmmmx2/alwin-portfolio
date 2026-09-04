@@ -35,8 +35,8 @@ export default async function HomePage() {
         <ProjectsSection projects={content.projects} limit={2} moreHref="/projects" />
         <ResearchSection papers={content.research} limit={2} moreHref="/research" />
         <EducationSection entries={content.education} />
-        <CertificationsSection items={content.certifications} />
         <AwardsSection awards={content.awards} />
+        <CertificationsSection items={content.certifications} />
         <ContactSection profile={content.profile} />
       </main>
     </>

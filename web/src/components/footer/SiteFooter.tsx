@@ -43,8 +43,8 @@ export function SiteFooter({
               ["/projects", "Projects"],
               ["/research", "Research"],
               ["/#education", "Education"],
-              ["/#certifications", "Certifications"],
               ["/#awards", "Achievements"],
+              ["/#certifications", "Certifications"],
               ["/#contact", "Contact"],
             ].map(([href, label]) => (
               <li key={href}>
