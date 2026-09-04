@@ -238,11 +238,11 @@ export function SiteNav({ email, resume }: { email: string; resume: ResumeMeta }
           href={resumeUrl}
           {...(resume.available
             ? { download: resume.filename ?? "resume.pdf" }
-            : { title: "Resume PDF hasn't been published yet" })}
-          aria-label={resume.available ? "Download resume (PDF)" : "Resume"}
+            : { title: "CV PDF hasn't been published yet" })}
+          aria-label={resume.available ? "Download CV (PDF)" : "CV"}
           className="inline-flex shrink-0 items-center gap-[9px] whitespace-nowrap rounded-pill border border-[rgb(255_255_255/0.14)] bg-[rgb(255_255_255/0.06)] px-3 py-[10px] font-display text-[13px] font-medium leading-none text-ink transition-colors duration-300 hover:border-line-strong hover:bg-glass-hover hover:text-ink-bright sm:px-[18px]"
         >
-          <span className="hidden sm:inline">Resume</span>
+          <span className="hidden sm:inline">CV</span>
           <DownloadIcon className="size-[13px]" />
         </a>
 

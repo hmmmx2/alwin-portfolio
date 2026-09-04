@@ -29,7 +29,7 @@ export function ResumeCard({ resume }: { resume: ResumeMeta }) {
       <div className="flex flex-wrap items-center gap-x-10 gap-y-6">
         <div className="flex-[1_1_280px]">
           <h2 className="m-0 font-display text-[clamp(20px,2.2vw,26px)] font-semibold leading-[1.2] tracking-[-0.02em] text-ink">
-            Full resume
+            Full CV
           </h2>
           <p className="m-0 mt-3 max-w-[52ch] text-[13.5px] leading-[1.65] text-ink-muted">
             {resume.available
@@ -58,7 +58,7 @@ export function ResumeCard({ resume }: { resume: ResumeMeta }) {
               download={resume.filename ?? "resume.pdf"}
               className="inline-flex items-center gap-[10px] rounded-pill bg-ink px-[26px] py-[14px] font-mono text-[12.5px] font-semibold leading-none tracking-[0.04em] text-void transition-all duration-200 hover:-translate-y-px hover:shadow-[0_12px_30px_rgb(255_255_255/0.16)]"
             >
-              Download resume
+              Download CV
               <DownloadIcon className="size-[14px]" />
             </a>
             {/*
@@ -103,7 +103,7 @@ export function ResumeCard({ resume }: { resume: ResumeMeta }) {
           <div className="relative mt-8 hidden aspect-[1/1.414] overflow-hidden rounded-card border border-[rgb(255_255_255/0.09)] bg-[rgb(255_255_255/0.02)] shadow-panel lg:block">
             <iframe
               src={`${resumeUrl}#view=FitH`}
-              title="Resume — PDF preview"
+              title="CV — PDF preview"
               loading="lazy"
               className="absolute inset-0 size-full border-0"
             />

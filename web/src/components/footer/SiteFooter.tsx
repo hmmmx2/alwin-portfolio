@@ -102,10 +102,10 @@ export function SiteFooter({
                 href={resumeUrl}
                 {...(resume.available
                   ? { download: resume.filename ?? "resume.pdf" }
-                  : { title: "Resume PDF hasn't been published yet" })}
+                  : { title: "CV PDF hasn't been published yet" })}
                 className={columnLink}
               >
-                Resume (PDF)
+                CV (PDF)
               </a>
             </li>
           </ul>

@@ -43,7 +43,7 @@ export default async function ExperiencePage() {
         <ExperienceTimeline entries={experience} stack={stack} />
       </Reveal>
 
-      <Reveal as="section" aria-label="Resume" className="pt-16">
+      <Reveal as="section" aria-label="CV" className="pt-16">
         <ResumeCard resume={resume} />
       </Reveal>
     </main>
