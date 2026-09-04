@@ -1,7 +1,6 @@
-import Image from "next/image";
-
 import type { Award } from "@portfolio/shared";
 
+import { AwardGallery } from "@/components/ui/AwardGallery";
 import { Reveal } from "@/components/ui/Reveal";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { cn } from "@/lib/cn";
@@ -17,65 +16,6 @@ import { SectionHeader, SectionTitle } from "./SectionHeader";
  * the evidence beside it. Awards without images keep the compact shape and
  * simply do not reserve the space.
  */
-
-/** Shared glass recipe, matching the project showcase's frames. */
-const frame =
-  "relative overflow-hidden rounded-tile border border-[rgb(255_255_255/0.09)] bg-[rgb(255_255_255/0.03)]";
-
-/**
- * Two stacked frames on the left, one full-height frame on the right.
- *
- * The right-hand image is a portrait certificate, so it gets its own column
- * rather than a third row: dropped into the stack it would either be cropped
- * to a letterbox or force the row absurdly tall.
- *
- * `object-contain` throughout, not `cover`. These are documents and
- * photographs of a person, and cropping a certificate to fill a box cuts off
- * the part that makes it evidence.
- */
-function AwardMedia({ images, title }: { images: string[]; title: string }) {
-  const [first, second, third] = images;
-  if (!first) return null;
-
-  return (
-    <div className="grid w-full flex-[1_1_340px] grid-cols-2 grid-rows-2 gap-[10px] sm:gap-3">
-      <div className={cn(frame, "col-start-1 row-start-1 aspect-[4/3]")}>
-        <Image
-          src={first}
-          alt={`${title}: award presentation on stage`}
-          fill
-          sizes="(max-width: 900px) 45vw, 260px"
-          className="object-contain"
-        />
-      </div>
-
-      {second ? (
-        <div className={cn(frame, "col-start-1 row-start-2 aspect-[4/3]")}>
-          <Image
-            src={second}
-            alt={`${title}: the award`}
-            fill
-            sizes="(max-width: 900px) 45vw, 260px"
-            className="object-contain"
-          />
-        </div>
-      ) : null}
-
-      {third ? (
-        // Spans both rows, so the certificate is readable rather than a stamp.
-        <div className={cn(frame, "col-start-2 row-span-2 row-start-1")}>
-          <Image
-            src={third}
-            alt={`${title}: certificate`}
-            fill
-            sizes="(max-width: 900px) 45vw, 260px"
-            className="object-contain"
-          />
-        </div>
-      ) : null}
-    </div>
-  );
-}
 
 export function AwardsSection({ awards }: { awards: Award[] }) {
   if (awards.length === 0) return null;
@@ -125,7 +65,7 @@ export function AwardsSection({ awards }: { awards: Award[] }) {
                   ) : null}
                 </div>
 
-                <AwardMedia images={award.images} title={award.title} />
+                <AwardGallery images={award.images} title={award.title} />
               </article>
             </Spotlight>
           </li>

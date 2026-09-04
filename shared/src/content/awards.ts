@@ -17,9 +17,9 @@ export const awards: Award[] = [
     summary: "",
     url: null,
     images: [
-      "/award-scent-stage.efb940f0.jpg",
-      "/award-scent-prize.1170adb6.jpg",
-      "/award-scent-certificate.e647a5b6.jpg",
+      { src: "/award-scent-stage.efb940f0.jpg", alt: "the award being presented on stage" },
+      { src: "/award-scent-prize.1170adb6.jpg", alt: "the award" },
+      { src: "/award-scent-certificate.e647a5b6.jpg", alt: "certificate of achievement" },
     ],
   },
   {
@@ -29,6 +29,13 @@ export const awards: Award[] = [
     date: null,
     summary: "",
     url: null,
-    images: [],
+    // One photograph, so the renderer gives it a single wide frame rather than
+    // a 2x2 grid with three empty cells.
+    images: [
+      {
+        src: "/award-scent-grant.f6e01aa0.jpg",
+        alt: "the funded teams at the programme announcement",
+      },
+    ],
   },
 ];

@@ -119,7 +119,20 @@ export const AwardSchema = z.object({
    * landscape-ish frames sit together and the portrait one is not squashed
    * between them.
    */
-  images: z.array(z.string().min(1)).default([]),
+  images: z
+    .array(
+      z.object({
+        src: z.string().min(1),
+        /**
+         * What the photograph shows, not what the award is called. It becomes
+         * the alt text and what a screen reader announces in the enlarged
+         * preview, so "certificate" earns its place and repeating the award
+         * title would not.
+         */
+        alt: z.string().min(1),
+      }),
+    )
+    .default([]),
 });
 
 export const ResearchPaperSchema = z.object({
