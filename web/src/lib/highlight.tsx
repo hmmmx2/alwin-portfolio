@@ -46,6 +46,7 @@ const TERMS = [
   "row-level security",
   "hybrid retrieval",
   "dense vector search",
+  "time series analysis",
   "prompt-injection",
   "quantisation",
   "Fine-tuned",
