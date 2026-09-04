@@ -20,13 +20,13 @@ export const experience: ExperienceEntry[] = [
     location: "Sarawak, Malaysia",
     summary:
       "Fine-tuning and evaluating a code-tutoring LLM on a single consumer GPU, and building the streaming application it is served through.",
-    period: "DEC 2025 — PRESENT",
+    period: "DEC 2025 - PRESENT",
     kind: "CONTRACT · 1 YEAR",
     current: true,
     highlights: [
-      "Trained a QLoRA adapter at rank 16 with 40.4 million trainable parameters — 0.92 percent of Qwen2.5 7B-Instruct — over 1,860 curated instruction examples on a single 16 GB RTX 5060 Ti, at effective batch 32 and sequence length 1,536.",
+      "Trained a QLoRA adapter at rank 16 with 40.4 million trainable parameters (0.92 percent of Qwen2.5 7B-Instruct) over 1,860 curated instruction examples on a single 16 GB RTX 5060 Ti, at effective batch 32 and sequence length 1,536.",
       "Reduced the training footprint to a measured 10.4 GiB peak against roughly 112 GiB for full-parameter AdamW, through 4-bit NF4 quantisation with rank-16 LoRA adapters.",
-      "Evaluated the tutor across 9 runs on its production serving path, reaching bug-localisation accuracy of 0.813 (95% CI 0.774–0.846), routing accuracy of 0.941 and debug-mode recall of 0.902.",
+      "Evaluated the tutor across 9 runs on its production serving path, reaching bug-localisation accuracy of 0.813 (95% CI 0.774 to 0.846), routing accuracy of 0.941 and debug-mode recall of 0.902.",
       "Engineered a streaming Python FastAPI backend with a Next.js and TypeScript client over PostgreSQL for a document reasoning application.",
     ],
     tech: ["Python", "PyTorch", "FastAPI", "PostgreSQL", "Next.js", "TypeScript"],
@@ -38,7 +38,7 @@ export const experience: ExperienceEntry[] = [
     location: "Sarawak, Malaysia",
     summary:
       "Built a bias-detection workflow over Llama 3 8B and wrote the research paper that came out of it.",
-    period: "JUN 2025 — DEC 2025",
+    period: "JUN 2025 - DEC 2025",
     kind: "INTERNSHIP",
     current: false,
     highlights: [
@@ -54,7 +54,7 @@ export const experience: ExperienceEntry[] = [
     location: "Kuala Lumpur, Malaysia",
     summary:
       "Translated business requirements into technical specifications and ran QA across two fintech projects.",
-    period: "NOV 2023 — JUN 2024",
+    period: "NOV 2023 - JUN 2024",
     kind: "FULL-TIME",
     current: false,
     highlights: [
@@ -71,7 +71,7 @@ export const experience: ExperienceEntry[] = [
     location: "Sarawak, Malaysia",
     summary:
       "Built a fruit defect detection system and the training pipeline and interface around it.",
-    period: "OCT 2023 — NOV 2023",
+    period: "OCT 2023 - NOV 2023",
     kind: "INTERNSHIP",
     current: false,
     highlights: [
@@ -88,7 +88,7 @@ export const experience: ExperienceEntry[] = [
     location: "Sarawak, Malaysia",
     summary:
       "Automated solar cell certification and built the ETL pipelines behind the plant's defect analysis.",
-    period: "MAR 2023 — JUL 2023",
+    period: "MAR 2023 - JUL 2023",
     kind: "INTERNSHIP",
     current: false,
     highlights: [

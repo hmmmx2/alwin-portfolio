@@ -2,6 +2,7 @@ import type { ExperienceEntry, StackItem } from "@portfolio/shared";
 
 import { BrandIcon } from "@/components/ui/BrandIcon";
 import { Reveal } from "@/components/ui/Reveal";
+import { highlightTerms } from "@/lib/highlight";
 
 /**
  * The full work history.
@@ -66,7 +67,7 @@ export function ExperienceTimeline({
           </div>
 
           <p className="m-0 mt-4 max-w-[68ch] text-[14px] leading-[1.7] text-ink-muted">
-            {entry.summary}
+            {highlightTerms(entry.summary)}
           </p>
 
           {entry.highlights.length > 0 ? (
@@ -80,7 +81,7 @@ export function ExperienceTimeline({
                     aria-hidden="true"
                     className="absolute left-0 top-[0.62em] h-px w-[11px] bg-[rgb(255_255_255/0.28)]"
                   />
-                  {highlight}
+                  {highlightTerms(highlight)}
                 </li>
               ))}
             </ul>

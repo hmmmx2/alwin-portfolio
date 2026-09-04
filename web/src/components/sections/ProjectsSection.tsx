@@ -6,6 +6,7 @@ import { BrandIcon } from "@/components/ui/BrandIcon";
 import { MediaSlot } from "@/components/ui/MediaSlot";
 import { ProjectVideo } from "@/components/ui/ProjectVideo";
 import { Reveal } from "@/components/ui/Reveal";
+import { highlightTerms } from "@/lib/highlight";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { ArrowRightIcon, ExternalIcon } from "@/components/ui/icons";
 
@@ -80,7 +81,7 @@ export function ProjectsSection({
                     {project.name}
                   </h3>
                   <p className="m-0 mt-[10px] max-w-[46ch] text-[13.5px] leading-[1.6] text-ink-muted">
-                    {project.summary}
+                    {highlightTerms(project.summary)}
                   </p>
 
                   <div className="mt-auto flex gap-[9px] pt-5">

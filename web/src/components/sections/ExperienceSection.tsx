@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ExperienceEntry } from "@portfolio/shared";
 
 import { Reveal } from "@/components/ui/Reveal";
+import { highlightTerms } from "@/lib/highlight";
 import { ArrowRightIcon } from "@/components/ui/icons";
 
 import { SectionHeader, SectionTitle } from "./SectionHeader";
@@ -65,7 +66,7 @@ export function ExperienceSection({
                 </p>
               ) : null}
               <p className="m-0 mt-3 max-w-[60ch] text-[13.5px] leading-[1.6] text-ink-muted">
-                {entry.summary}
+                {highlightTerms(entry.summary)}
               </p>
             </div>
 

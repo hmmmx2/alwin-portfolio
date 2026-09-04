@@ -33,6 +33,14 @@
   --color-ink-faint: rgb(244 245 246 / 0.4);
   --color-ink-ghost: rgb(244 245 246 / 0.3);
 
+  /* The only colour on an otherwise monochrome page, reserved for the
+     technical vocabulary in the experience and project copy. Ice blue rather
+     than a highlighter yellow: 12.2:1 on the body ground and 9.7:1 on the
+     lightest card, so it stays above AA everywhere it is used, and it reads as
+     a technical accent rather than as a marker pen. Used for nothing else --
+     the moment a second thing takes it, it stops meaning "this is the stack".*/
+  --color-accent: #7dd3fc;
+
   --color-line: rgb(255 255 255 / 0.08);
   --color-line-strong: rgb(255 255 255 / 0.22);
   --color-glass: rgb(255 255 255 / 0.045);

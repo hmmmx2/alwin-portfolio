@@ -6,6 +6,7 @@ import { BrandIcon } from "@/components/ui/BrandIcon";
 import { ProjectVideo } from "@/components/ui/ProjectVideo";
 import { ExternalIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
+import { highlightTerms } from "@/lib/highlight";
 
 /**
  * One large showcase row per project — text on one side, screenshots on the
@@ -174,7 +175,7 @@ export function ProjectShowcase({
               </h2>
 
               <p className="m-0 mt-5 max-w-[52ch] text-[14.5px] leading-[1.75] text-ink-muted">
-                {project.description || project.summary}
+                {highlightTerms(project.description || project.summary)}
               </p>
 
               {project.highlights.length > 0 ? (
@@ -188,7 +189,7 @@ export function ProjectShowcase({
                         aria-hidden="true"
                         className="absolute left-[2px] top-[0.6em] size-[5px] rounded-full bg-[rgb(255_255_255/0.45)]"
                       />
-                      {highlight}
+                      {highlightTerms(highlight)}
                     </li>
                   ))}
                 </ul>
