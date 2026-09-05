@@ -4,6 +4,7 @@ import { IBM_Plex_Mono, Manrope, Space_Grotesk } from "next/font/google";
 import { profile } from "@portfolio/shared";
 
 import { Analytics } from "@/components/Analytics";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { SiteFooter } from "@/components/footer/SiteFooter";
 import { SiteNav } from "@/components/nav/SiteNav";
 import { RevealObserver } from "@/components/ui/RevealObserver";
@@ -99,6 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         <RevealObserver />
         <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );
