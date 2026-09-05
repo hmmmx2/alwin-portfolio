@@ -6,6 +6,7 @@ import { BrandIcon } from "@/components/ui/BrandIcon";
 import { EmailLink } from "@/components/ui/EmailLink";
 import { MailIcon } from "@/components/ui/icons";
 import { resumeUrl } from "@/lib/api";
+import { RESUME_DOWNLOAD_NAME } from "@/lib/resume";
 
 import { Wordmark } from "./Wordmark";
 
@@ -66,11 +67,18 @@ export function SiteFooter({
                 </Link>
               </li>
             ))}
-            <li>
-              <Link href="/#research" className={columnLink}>
-                All papers
-              </Link>
-            </li>
+            {/*
+              Only worth a link when there is more than one paper: "All papers"
+              under a list of exactly one reads as a bug. Points at /research,
+              the same place the titles above go, rather than the home anchor.
+            */}
+            {research.length > 1 ? (
+              <li>
+                <Link href="/research" className={columnLink}>
+                  All papers
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </nav>
 
@@ -101,7 +109,7 @@ export function SiteFooter({
               <a
                 href={resumeUrl}
                 {...(resume.available
-                  ? { download: resume.filename ?? "resume.pdf" }
+                  ? { download: resume.filename ?? RESUME_DOWNLOAD_NAME }
                   : { title: "CV PDF hasn't been published yet" })}
                 className={columnLink}
               >
@@ -115,10 +123,37 @@ export function SiteFooter({
       <div aria-hidden="true" className="h-px bg-[rgb(255_255_255/0.09)]" />
 
       <div className="flex flex-wrap items-center justify-between gap-6 pb-[30px] pt-[22px]">
-        <p className="m-0 font-mono text-[11.5px] leading-none tracking-[0.06em] text-ink-faint">
-          © {new Date().getFullYear()} {profile.name} • All rights reserved
-        </p>
+        <div className="flex flex-col gap-[10px]">
+          {/*
+            Above the copyright, not below it: someone who has scrolled the
+            whole page is usually looking for exactly this, and a copyright
+            notice is a weak last word.
+          */}
+          {profile.status ? (
+            <p className="m-0 flex items-center gap-[9px] font-mono text-[11.5px] leading-none tracking-[0.04em] text-ink-muted">
+              <span
+                aria-hidden="true"
+                className="inline-block size-[7px] shrink-0 rounded-full bg-accent"
+              />
+              {profile.status}
+            </p>
+          ) : null}
+          <p className="m-0 font-mono text-[11.5px] leading-none tracking-[0.06em] text-ink-faint">
+            © {new Date().getFullYear()} {profile.name} • All rights reserved
+          </p>
+        </div>
         <div className="flex items-center gap-[10px]">
+          {/*
+            The home page runs to nine sections and two videos, so the way back
+            is a long scroll. `#top` already exists as an id.
+          */}
+          <Link
+            href="/#top"
+            className="mr-1 inline-flex items-center gap-[7px] font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted transition-colors hover:text-ink-bright"
+          >
+            <span aria-hidden="true">↑</span>
+            Top
+          </Link>
           {linkedin ? (
             <a href={linkedin.href} aria-label="LinkedIn profile" className={socialTile}>
               <BrandIcon name="linkedin" className="size-[15px]" />

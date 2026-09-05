@@ -3,6 +3,8 @@ import { IBM_Plex_Mono, Manrope, Space_Grotesk } from "next/font/google";
 
 import { profile } from "@portfolio/shared";
 
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
+
 import { Analytics } from "@/components/Analytics";
 import { SiteFooter } from "@/components/footer/SiteFooter";
 import { SiteNav } from "@/components/nav/SiteNav";
@@ -99,6 +101,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         <RevealObserver />
         <Analytics />
+        {/*
+          Vercel's own analytics, alongside the first-party beacon above rather
+          than instead of it. They answer different questions: the first-party
+          one writes to Turso and honours DNT and Global Privacy Control before
+          it makes a request, and this one gives a dashboard without a SQL
+          query.
+
+          It needs no CSP change: the script and its beacons are served from
+          /_vercel/insights on this origin, which `script-src 'self'` and
+          `connect-src 'self'` already allow. Aliased because the first-party
+          component owns the name `Analytics`.
+        */}
+        <VercelAnalytics />
       </body>
     </html>
   );

@@ -38,6 +38,12 @@ export const ProfileSchema = z.object({
   /** Short paragraph shown beside the contact form. */
   availability: z.string().min(1),
   /**
+   * One line for the footer, where `availability` is far too long. Separate
+   * rather than truncated: a sentence cut mid-clause reads as a bug, and this
+   * is the last thing a recruiter who scrolled the whole page sees.
+   */
+  status: z.string().default(""),
+  /**
    * Path under /public to the hero portrait. Null renders the design's empty
    * media placeholder instead. Should be a transparent PNG — it sits inside
    * the wave field's opening with no frame behind it.

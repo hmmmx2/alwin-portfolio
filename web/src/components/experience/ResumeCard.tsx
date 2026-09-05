@@ -2,6 +2,7 @@ import type { ResumeMeta } from "@portfolio/shared";
 
 import { DownloadIcon, ExternalIcon } from "@/components/ui/icons";
 import { resumeUrl } from "@/lib/api";
+import { RESUME_DOWNLOAD_NAME } from "@/lib/resume";
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -55,7 +56,7 @@ export function ResumeCard({ resume }: { resume: ResumeMeta }) {
             <div className="flex flex-wrap items-center gap-3">
             <a
               href={resumeUrl}
-              download={resume.filename ?? "resume.pdf"}
+              download={resume.filename ?? RESUME_DOWNLOAD_NAME}
               className="inline-flex items-center gap-[10px] rounded-pill bg-ink px-[26px] py-[14px] font-mono text-[12.5px] font-semibold leading-none tracking-[0.04em] text-void transition-all duration-200 hover:-translate-y-px hover:shadow-[0_12px_30px_rgb(255_255_255/0.16)]"
             >
               Download CV

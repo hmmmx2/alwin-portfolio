@@ -10,6 +10,7 @@ import { EmailLink } from "@/components/ui/EmailLink";
 import { Logo } from "@/components/ui/Logo";
 import { CloseIcon, DownloadIcon, MailIcon, MenuIcon } from "@/components/ui/icons";
 import { resumeUrl } from "@/lib/api";
+import { RESUME_DOWNLOAD_NAME } from "@/lib/resume";
 import { cn } from "@/lib/cn";
 
 /**
@@ -237,7 +238,7 @@ export function SiteNav({ email, resume }: { email: string; resume: ResumeMeta }
         <a
           href={resumeUrl}
           {...(resume.available
-            ? { download: resume.filename ?? "resume.pdf" }
+            ? { download: resume.filename ?? RESUME_DOWNLOAD_NAME }
             : { title: "CV PDF hasn't been published yet" })}
           aria-label={resume.available ? "Download CV (PDF)" : "CV"}
           className="inline-flex shrink-0 items-center gap-[9px] whitespace-nowrap rounded-pill border border-[rgb(255_255_255/0.14)] bg-[rgb(255_255_255/0.06)] px-3 py-[10px] font-display text-[13px] font-medium leading-none text-ink transition-colors duration-300 hover:border-line-strong hover:bg-glass-hover hover:text-ink-bright sm:px-[18px]"

@@ -13,6 +13,7 @@ export const profile: Profile = {
   email: "alwin.tayjx.work@gmail.com",
   availability:
     "Graduating June 2026 and looking for machine learning engineering work: LLM fine-tuning, retrieval systems, and the infrastructure around them. Replies within two days.",
+  status: "Open to machine learning engineering roles · graduating June 2026",
   // Transparent WebP in web/public, built by web/scripts/build-portrait.py --
   // the filename is content-hashed, so edit the photo and rerun rather than
   // changing this by hand.

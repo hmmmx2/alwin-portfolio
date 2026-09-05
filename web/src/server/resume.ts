@@ -3,6 +3,8 @@ import { join } from "node:path";
 
 import type { ResumeMeta } from "@portfolio/shared";
 
+import { RESUME_DOWNLOAD_NAME } from "@/lib/resume";
+
 /**
  * Size and date, read from the file on disk. Replaces the old
  * `/api/resume/meta` round trip; the pages that call this are static, so the
@@ -22,7 +24,7 @@ const RESUME_FILE = join(process.cwd(), "public", "resume.pdf");
  * ignore it across origins, which is why this was not worth doing while the
  * API served the file from another port.
  */
-export const RESUME_DOWNLOAD_NAME = "Alwin_ML_Engineer_CV.pdf";
+export { RESUME_DOWNLOAD_NAME } from "@/lib/resume";
 
 export async function getResumeMeta(): Promise<ResumeMeta> {
   try {
