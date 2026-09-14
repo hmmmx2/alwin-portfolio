@@ -31,7 +31,8 @@ import { Fragment, type ReactNode } from "react";
  */
 const TERMS = [
   // Models and architectures
-  "Qwen2.5 7B-Instruct",
+  "Qwen3-Coder-30B-A3B-Instruct",
+  "Mixture-of-Experts",
   "Qwen2.5-7B",
   "Qwen3.5-9B",
   "Llama 3 8B",
@@ -41,6 +42,7 @@ const TERMS = [
 
   // Methods
   "Direct Preference Optimization",
+  "GRPO",
   "Low-Rank Adaptation",
   "learning-to-rank",
   "row-level security",
@@ -54,7 +56,6 @@ const TERMS = [
   "reranking",
   "QLoRA",
   "LoRA",
-  "AdamW",
   "NF4",
   "IRT",
   "RAG",
@@ -73,6 +74,9 @@ const TERMS = [
   "Alembic",
   "OpenAPI",
   "SGLang",
+  "WinForms",
+  "RunPod",
+  "vLLM",
   "Postgres",
   "Judge0",
   "Grafana",
@@ -87,10 +91,13 @@ const TERMS = [
   "SSE",
   "ETL",
 
+  // Process vocabulary, spelled out as the CV spells it
+  "Software Development Life Cycle",
+  "System Integration Testing",
+  "User Acceptance Testing",
+
   // Security and evaluation vocabulary
-  "conversational AI",
   "Agile Scrum",
-  "SIT/UAT",
   "95% CI",
   "SSRF",
   "SDLC",
