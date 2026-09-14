@@ -28,6 +28,8 @@ export const projects: Project[] = [
   {
     id: "synthien-ai",
     name: "SYNTHIEN AI",
+    demoUrl: "https://www.synthienai.com/",
+    demoLabel: "Synthien AI Website",
     // A 48s silent capture of the platform running: five papers ingested, the
     // agent planning across them, and an answer returned with a numbered
     // source list. Transcoded from a 57 MB MPEG-4 Part 2 original, which no
@@ -52,7 +54,6 @@ export const projects: Project[] = [
       "Shipped an SSE-streaming workspace (chat, notes, spreadsheets), an OpenAPI-generated typed client with byte-exact CI drift checks, Alembic migrations tested for reversibility in CI, and OpenTelemetry, Prometheus, Grafana and Loki observability behind Caddy TLS",
     ],
     repoUrl: null,
-    demoUrl: null,
     images: [],
     tech: ["Python", "FastAPI", "PostgreSQL", "Qdrant", "Redis", "vLLM", "Next.js", "TypeScript", "Docker"],
   },
@@ -83,6 +84,7 @@ export const projects: Project[] = [
     ],
     repoUrl: null,
     demoUrl: null,
+    demoLabel: "",
     images: [],
     tech: ["Python", "FastAPI", "PyTorch", "SGLang", "Judge0", "PySpark", "LightGBM", "Next.js", "TypeScript"],
   },

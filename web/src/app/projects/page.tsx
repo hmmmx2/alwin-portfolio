@@ -39,10 +39,6 @@ export default async function ProjectsPage() {
         <h1 className="m-0 max-w-[18ch] font-display text-[clamp(34px,5.4vw,64px)] font-semibold leading-[1.02] tracking-[-0.035em] text-ink">
           Things I&rsquo;ve built
         </h1>
-        <p className="m-0 mt-6 max-w-[58ch] text-[15px] leading-[1.7] text-ink-muted">
-          Open-source libraries, research tooling and the occasional experiment.
-          Each one lists what it does and the stack behind it.
-        </p>
         <p className="m-0 mt-7 font-mono text-[11px] uppercase leading-none tracking-[0.14em] text-ink-ghost">
           {projects.length} {projects.length === 1 ? "project" : "projects"}
           {categories.length > 0 ? ` · ${categories.join(" · ")}` : ""}

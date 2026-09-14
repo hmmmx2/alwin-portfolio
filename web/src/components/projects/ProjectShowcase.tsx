@@ -148,7 +148,14 @@ export function ProjectShowcase({
         return (
           <li
             key={project.id}
+            /*
+              The home page's cards link to /projects#<id>, so each row needs
+              the anchor to land on. scroll-mt clears the fixed nav, which would
+              otherwise sit over the heading it just scrolled to.
+            */
+            id={project.id}
             className={cn(
+              "scroll-mt-24",
               "grid grid-cols-1 items-center gap-10 lg:gap-x-12",
               // The template mirrors along with the order, so the media keeps
               // the wide column on both sides — swapping order alone put it in
@@ -223,8 +230,13 @@ export function ProjectShowcase({
 
               <div className="mt-9 flex flex-wrap gap-[10px]">
                 {project.demoUrl ? (
-                  <a href={project.demoUrl} className={primaryCta}>
-                    Live demo
+                  <a
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={primaryCta}
+                  >
+                    {project.demoLabel || "Live demo"}
                     <ExternalIcon className="size-[12px]" />
                   </a>
                 ) : null}

@@ -198,6 +198,11 @@ export const ProjectSchema = z.object({
   repoUrl: z.string().min(1).nullable(),
   demoUrl: z.string().min(1).nullable(),
   /**
+   * What the demo button says. Empty falls back to "Live demo", which is right
+   * for a hosted demo and wrong for a product's own site.
+   */
+  demoLabel: z.string().default(""),
+  /**
    * Long-form copy for the /projects showcase row. Falls back to `summary`
    * when empty — `summary` stays short because it is what the home page's
    * teaser cards show.

@@ -48,7 +48,12 @@ export function ProjectsSection({
             style={{ "--reveal-index": index } as React.CSSProperties}
           >
             <Spotlight className="h-full rounded-card">
-              <article className="flex h-full flex-col overflow-hidden rounded-card border border-[rgb(255_255_255/0.075)] bg-gradient-to-br from-[rgb(34_36_41/0.66)] to-[rgb(14_15_17/0.52)] shadow-card backdrop-blur-[var(--glass-blur)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgb(255_255_255/0.2)]">
+              <article className="relative flex h-full flex-col overflow-hidden rounded-card border border-[rgb(255_255_255/0.075)] bg-gradient-to-br from-[rgb(34_36_41/0.66)] to-[rgb(14_15_17/0.52)] shadow-card backdrop-blur-[var(--glass-blur)] transition-all duration-300 hover:-translate-y-1 hover:border-[rgb(255_255_255/0.2)]">
+                {/*
+                  z-10 so the stretched link below does not sit over the video:
+                  the card navigates, the player still plays.
+                */}
+                <div className="relative z-10">
                 {project.video ? (
                   /*
                     The teaser plays: a card that shows the product working is a
@@ -72,19 +77,32 @@ export function ProjectsSection({
                     className="aspect-video w-full border-b border-[rgb(255_255_255/0.07)]"
                   />
                 )}
+                </div>
 
                 <div className="flex flex-1 flex-col px-6 pb-5 pt-[22px]">
                   <p className="m-0 font-mono text-[9.5px] font-medium uppercase leading-none tracking-[0.22em] text-ink-ghost">
                     {project.category}
                   </p>
                   <h3 className="m-0 mt-[14px] font-display text-[22px] font-semibold leading-[1.15] tracking-[-0.025em] text-ink">
-                    {project.name}
+                    {/*
+                      One real link, stretched over the card with a
+                      pseudo-element, rather than an anchor wrapping the whole
+                      article -- the card already contains links, and nesting
+                      anchors is invalid. Keyboard users get one stop on the
+                      title instead of a card-sized tab target.
+                    */}
+                    <Link
+                      href={`/projects#${project.id}`}
+                      className="after:absolute after:inset-0 after:content-[''] hover:text-ink-bright"
+                    >
+                      {project.name}
+                    </Link>
                   </h3>
                   <p className="m-0 mt-[10px] max-w-[46ch] text-[13.5px] leading-[1.6] text-ink-muted">
                     {highlightTerms(project.summary)}
                   </p>
 
-                  <div className="mt-auto flex gap-[9px] pt-5">
+                  <div className="relative z-10 mt-auto flex gap-[9px] pt-5">
                     {project.repoUrl ? (
                       <a
                         href={project.repoUrl}
@@ -97,7 +115,9 @@ export function ProjectsSection({
                     {project.demoUrl ? (
                       <a
                         href={project.demoUrl}
-                        aria-label={`${project.name} live demo`}
+                        aria-label={`${project.name}: ${project.demoLabel || "live demo"}`}
+                        target="_blank"
+                        rel="noreferrer"
                         className={iconLink}
                       >
                         <ExternalIcon className="size-[13px]" />
